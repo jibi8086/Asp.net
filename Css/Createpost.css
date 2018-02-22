@@ -1,0 +1,39 @@
+﻿<style>
+        .row{
+    margin-top:40px;
+    padding: 0 10px;
+}
+
+.clickable{
+    cursor: pointer;   
+}
+
+.panel-heading span {
+	margin-top: -20px;
+	font-size: 15px;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+    
+}
+
+.title {
+    color: grey;
+    font-size: 15px;
+}
+a {
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+}
+.nav-news-feed
+{
+    color:orangered;
+    margin-top:10px;
+}
+
+    </style>
