@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>@Session["name"]-NuNetwork-</title>
+    <meta charset="utf-8" />
+    <!-- Compiled and minified CSS -->
+    <!-- Compiled and minified JavaScript -->
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <link href="~/Css/StyleSheetMaterialize.css" rel="stylesheet" />
+    <script>
+        function displyname()
+        {
+            if('@Session["name"]'!=null){
+            document.getElementById('uname').innerHTML+='@Session["name"]';
+                }
+        }
+    </script>
+   
+    <link href="~/Css/icon.css" rel="stylesheet" />
+</head>
+<body onload="displyname()">
+
+    <nav style="position:fixed;top:0;float:initial;z-index:10;">
+        <div class="nav-wrapper #1565c0 blue darken- ">
+            <a href="#" class="brand-logo" onclick="location.href='@Url.Action("UserProfile","UserRegister")'">  &nbsp NuNetwork</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a onclick="location.href='@Url.Action("ViewCompanies","SuperAdmin")'"><i class="material-icons left">recent_actors</i>Manage Companies</a></li>
+                <li> <a id="uname" class="dropdown-button  #1565c0 blue darken" href="#" data-activates='dropdown1'><i class="material-icons left">person</i></a></li>
+                <ul id='dropdown1' class='dropdown-content'>
+
+                   
+                    <li class="divider"></li>
+
+
+                    <li><a href="#!" onclick="location.href='@Url.Action("SessionClear","UserLogin")'"><i class="material-icons left">settings_power</i> LogOut</a></li>
+
+                </ul>
+
+
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content goes here -->
+    @RenderBody()
+
+    @RenderSection("scripts", required: false)
+
+
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+   
+    <script src="~/Scripts/JavaScript.js"></script>
+</body>
+</html>

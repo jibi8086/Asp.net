@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>-NuNetwork-</title>
+    <meta charset="utf-8" />
+    <!-- Compiled and minified CSS -->
+    <!-- Compiled and minified JavaScript -->
+    <link href="~/Css/StyleSheetMaterialize.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/jquery_1.js"></script>
+    <link href="~/Css/Inline.css" rel="stylesheet" />
+    <script>
+        function displyname() {
+            if ('@Session["name"]' != null) {
+                document.getElementById('uname').innerHTML += '@Session["name"]';
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="~/Css/icon.css" rel="stylesheet" />
+    <script src="~/Scripts/SessionCheckForgotPage.js"></script>
+
+
+</head>
+<body onload="displyname()">
+
+    <nav style="position:fixed;top:0;float:initial;z-index:10;">
+        <div class="nav-wrapper #1565c0 blue darken- ">
+            <a href="#" class="brand-logo" onclick="location.href='@Url.Action("LoginUser","UserLogin")'">  &nbsp NuNetwork</a>
+           
+
+
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content goes here -->
+    @RenderBody()
+
+    @RenderSection("scripts", required: false)
+
+
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script src="~/Scripts/JavaScript.js"></script>
+
+</body>
+</html>

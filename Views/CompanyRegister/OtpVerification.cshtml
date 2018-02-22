@@ -1,0 +1,89 @@
+﻿@model NuNetwork.Models.CompanyRegistrationModel
+
+@{
+    ViewBag.Title = "OtpVerification";
+    Layout = "~/Views/Shared/Home_Layout.cshtml";
+   // Layout = null;
+}
+
+<html>
+<head>
+    @*OtpValidation*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#submitOtp").click(function () {
+                var otp = $("#txtOtp").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/CompanyRegister/OtpValidation",
+                    data: { otp: otp },
+                    success: function (response) {
+
+                        if (response.id != 0) {
+                            if (response.id == 2)
+                            {
+                                alert("Sorry your OTP has expired")
+                            }
+                            else
+                            {
+                                window.location.href = "/UserRegister/UserRegister";
+                            }
+                        }
+                        else {
+                            alert("Invalid OTP !");
+                        }
+                    },
+                    failure: function (response) {
+
+                    },
+                    error: function (response) {
+
+                    }
+                });
+            });
+        });
+
+    </script>
+    @*Otp TextBox Length Validation*@
+    <script>
+    $(document).ready(function () {
+        validationLength =6;
+        $('#txtOtp').on('keyup keydown change', function () {
+            if ($(this).val().length > validationLength) {
+                val = $(this).val().substr(0, $(this).val().length - 1);
+                $(this).val(val);
+            };
+        });
+    });
+    </script>
+    </head>
+<body >
+    <div class="container be-detail-container otp">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <br>
+            <img src="~/Images/Otpvalidation.png" class="img-responsive otpImage"><br>
+
+            <h1 class="text-center otpText">Verify your Email Id</h1>
+           <p class="otpMessage"> Thanks for giving your details. An OTP has been sent to your Email Id.<br> Please enter the 6 digit OTP below for Successful Registration</p>  <p></p>
+            <br>
+
+            <form method="post" id="veryfyotp" action="">
+                <div class="row">
+                    <div class="form-group col-sm-8">
+                        <span class="otpSpanStyle"></span>              
+                          <input type="text" class="form-control" id="txtOtp" name="otp" placeholder="Enter your OTP number" required="" style="margin-left:370px;width:166px;border:1px solid #2196f36b">
+                    </div>
+                    <button type="submit" id="submitOtp"class="btn btn-primary  pull-right col-sm-3 otpbtnStyle" >Verify</button>
+                </div>
+            </form>
+            <br><br>
+        </div>
+    </div>
+    </div>
+
+
+</body>
+
+</html>
+

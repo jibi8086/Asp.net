@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "ChangeProfileImage";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+
+
+<html>
+<head>
+  
+    
+    <script src="~/Scripts/ImageUpload.js"></script>
+    <link href="~/Css/image upload.css" rel="stylesheet" />
+
+</head>
+<body>
+   @*</div>*@
+   
+
+    <div class="wrapper">
+        <button class="no-image" onclick="showImageUpload()" id="img-result">Upload Image</button>
+        <div id="imgcontrols" class="ctrls">
+            <input type="file"style="display:none;" id="inputfile" accept="image/jpeg, image/png" />
+            <button type="button" class="btn btn-default" id="submit">Upload Image</button>
+        </div>
+    </div>
+  
+      
+   
+
+</body>
+</html>

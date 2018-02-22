@@ -1,0 +1,173 @@
+﻿@model NuNetwork.Models.CompanyRegistrationModel
+
+@{
+
+    Layout = "~/Views/Shared/RegisterMaster.cshtml";
+}
+<html>
+
+<head>
+    @*mail validation*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#email").focusout(function () {
+                var email = $("#email").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/CompanyRegister/MailCheck",
+                    data: { mailidId: email },
+                    success: function (response) {
+
+
+                        if (response.id == 0) {
+                            alert("This Email Already exist");
+                            $("#email").val("");
+                        }
+                        else if(response.id==404)
+                        {
+                            window.location.href = "/CompanyRegister/Error_View";
+                            
+                        }
+                    },
+                    failure: function (response) {
+                       
+                    },
+                    error: function (response) {
+                        
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+    <script type="text/javascript">
+        function ValidateControl() {
+            if ($("#companyName").val() == "") {
+                $("#companyName").addClass("form-control is-invalid");
+        }
+            if ($("#companyCode").val() == "") {
+                $("#companyCode").addClass("form-control is-invalid");
+        }
+            if ($("#email").val() == "") {
+                $("#email").addClass("form-control is-invalid");
+        }
+            if ($("#stateId").val() == "") {
+                $("#stateId").addClass("form-control is-invalid");
+        }
+            if ($("#cityName").val() == "") {
+                $("#cityName").addClass("form-control is-invalid");
+        }
+            if ($("#ceo").val() == "") {
+                $("#ceo").addClass("form-control is-invalid");
+        }
+            if ($("#landLine").val() == "") {
+                $("#landLine").addClass("form-control is-invalid");
+        }
+            if ($("#PhoneNumber").val() == "") {
+                $("#PhoneNumber").addClass("form-control is-invalid");
+        }
+        
+    }
+    </script>
+
+</head>
+@*<body background="~/Images/max.jpg">*@
+<body background="" style="background-repeat:no-repeat; background-size:cover">
+    @using (Html.BeginForm("CompanyInsert", "CompanyRegister", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <div class="jumbotron"style="width:600px; margin-left:300px; background-color:whitesmoke;margin-top:2px ">
+            <h4 style="color:#2780e3">Company Registration.</h4>
+            <hr />
+            <div class="form-group" style="width:500px">
+                @Html.LabelFor(m => m.companyName, "Company Name", new { @class = "col-md-6 control-label"})
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.companyName, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(m => m.companyName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group" style="width:500px">
+                @Html.LabelFor(m => m.companyCode, new { @class = "col-md-6 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.companyCode, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.companyCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group" style="width:500px">
+                @Html.LabelFor(m => m.email, new { @class = "col-md-6 control-label" })
+                <div class="col-md-10" id="mydiv">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                        </div>
+                        @Html.TextBoxFor(m => m.email, new { @class = "form-control" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group" style="width:500px" id="state1">
+                @Html.LabelFor(m => m.State, new { @class = "col-md-6 control-label" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.stateId, Model.drpStateName, "Please select", new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group" style="width:500px">
+                @Html.LabelFor(m => m.cityName, new { @class = "col-md-6 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.cityName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.cityName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group" style="width:500px">
+                @Html.LabelFor(m => m.ceo, new { @class = "col-md-6 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.ceo, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ceo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group" style="width:500px">
+                @Html.LabelFor(m => m.landLine, new { @class = "col-md-6 control-label" })
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-phone" aria-hidden="true"></i>
+                        </div>
+                        @Html.TextBoxFor(m => m.landLine, new { @class = "form-control" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.landLine, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group" style="width:500px">
+                @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-6 control-label" })
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-mobile" aria-hidden="true"></i>
+                        </div>
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group companyRegiText" >
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="sbtn" value="Register" onclick="ValidateControl();"/>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    @Scripts.Render("~/bundles/jqueryval")
+</body>
+
+</html>

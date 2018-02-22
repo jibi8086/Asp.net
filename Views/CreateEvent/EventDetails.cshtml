@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "EventDetails";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+<head>
+    <link href="~/Css/eventdetails.css" rel="stylesheet" />
+    <script>
+     $(document).ready(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/CreateEvent/EventProfile",
+                        success: function (response) {
+                            var showresult = $.parseJSON(response);
+                            for (var i = 0; i < showresult.length; i++) {
+                                var name = showresult[i].EventName;
+                                var eventDescription = showresult[i].EventDescription;
+                                var startdate = showresult[i].StartDate;
+                                var enddate = showresult[i].EndDate;
+                                var time = showresult[i].Time;
+                                var location = showresult[i].Location;
+                                var createdby = showresult[i].CreatedBy;
+                                $('#eventName').text(name);
+                                $('#details').text(eventDescription);
+                                $('#date').text(startdate);
+                                $('#enddate').text(enddate);
+                                $('#time').text(time);
+                                $('#place').text(location);
+                                $('#creat').text(createdby);
+                                                       }
+                        },
+                        failure: function (response) {
+                            bootbox.alert("Process failed!! Please try again.");
+                        },
+                        error: function (response) {
+                            bootbox.alert("Error!! Sorry for your inconvinience.");
+                        }
+                    });
+
+            });
+    </script>
+</head>
+<body class="">
+    <div class="wrapper">
+            <h3 class="upper">Event</h3>  
+        <h3 class="group" id="creat"></h3>
+            <a class="meetup" id="eventName"></a>
+       
+            
+   
+            <h4 class="group" id="details"></h4>
+            <p class="details">
+                <span class="row">
+                    <i class="material-icons md-36 icon">event</i>
+                    <span class="row-item">
+                        <time id="date"></time> &nbsp;&nbsp;<bold>TO</bold>  <i class="material-icons md-36 icon">event</i> <time id="enddate"></time>&nbsp;&nbsp; AT <i class="material-icons md-36 icon">event</i> <time id="time"></time>
+                    </span>
+                </span>
+                <span class="row">
+                    <i class="material-icons md-36 icon">room</i>
+                    <span class="row-item">
+                        <strong id="place"></strong>
+
+                    </span>
+                </span>
+            </p>
+</div>
+</body>

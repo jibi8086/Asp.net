@@ -1,0 +1,40 @@
+﻿@model NuNetwork.Models.LoginModel
+
+@{
+    //ViewBag.Title = "LoginUser";
+
+    Layout = "~/Views/Shared/Home_Layout.cshtml";
+
+}
+
+<link href="~/Css/loginstyle.css" rel="stylesheet" />
+<script src="~/Scripts/login.js"></script>
+    @using (@Html.BeginForm("LoginUser", "UserLogin", FormMethod.Post))
+    {
+<div class="bg">
+<div class="login-page">
+
+    <div class="form">
+     
+        <form class="login-form">
+            Login<br>
+@Html.TextBoxFor(model => model.UserName, new { placeholder = "Username" })
+
+
+    @Html.TextBoxFor(model => model.Password, new { type = "password", placeholder = "password" })
+  
+            <button>Login</button>
+            <p><br>
+            @Html.ActionLink("Register Company", "CompanyRegistration", "CompanyRegister")&nbsp; &nbsp; &nbsp; &nbsp;
+            @Html.ActionLink("Forgot Password?", "ForgotPassword", "UserLogin")
+            </p>
+            <p class="message" id="error">
+                @ViewBag.error<br>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })<br>
+            </p>
+        </form>
+    </div>
+</div>
+
+    </div>
+    } 

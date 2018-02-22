@@ -1,0 +1,677 @@
+﻿
+@{
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>CreatePost</title>
+    <script>
+        $(document).ready(function () {
+            if ('@Session["userid"]' == '')
+            {
+                window.location.href = "/UserLogin/LoginUser";
+            }
+            if ('@Session["usertype"]' == 1) {
+                var menu = document.getElementById('usermenu');
+                menu.innerHTML += ' <a href="@Url.Action("UserRegister","UserRegister")" style="font-size:15px;">RegisterUser&nbsp<i class="material-icons" style="font-size:18px;">person_add</i></a>';
+                menu.innerHTML += ' <a href="@Url.Action("ViewEmploye","CompanyRegister")" style="font-size:15px;">ViewEmploye&nbsp;<i class="material-icons" style="font-size:18px;">recent_actors</i></a>';
+
+            }
+
+            $("#CityName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/NewsFeeds/Search",
+                        type: "POST",
+                        async: false,
+                        cache: false,
+                        dataType: "json",
+                        data: { prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+
+                                return { label: item.Name + " " + item.LastName + "", id: item.Sr_no };
+                            }))
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    var label = ui.item.id;
+                    $("#CityName").val("");
+                    $.ajax({
+
+                        type: "POST",
+                        async: false,
+                        cache: false,
+                        url: "/UserRegister/Search",
+                        data: { SearchValue: label },
+                        success: function (response) {
+                            if (response.id == 1) {
+                                window.location.href = "/UserRegister/UserProfile";
+                            }
+                            else {
+
+                            }
+                        },
+                        failure: function (response) {
+
+                        },
+                        error: function (response) {
+
+                        }
+                    });
+
+                }
+            });
+        });
+    </script>
+    <script>
+            $(document).on('click', '.panel-heading span.clickable', function (e) {
+                var $this = $(this);
+                if (!$this.hasClass('panel-collapsed')) {
+                    $this.parents('.panel').find('.panel-body').slideUp();
+                    $this.addClass('panel-collapsed');
+                    $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                } else {
+                    $this.parents('.panel').find('.panel-body').slideDown();
+                    $this.removeClass('panel-collapsed');
+                    $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                }
+            })
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            $("#postmessage").val("");
+
+            $("#submit").click(function () {
+
+                var formData = new FormData();
+                var postmessage = $("#postmessage").val();
+
+                var file = $("#inputfile").get(0).files;
+                    if (file.length > 0)
+                    {
+                        for (var i = 0; i < file.length ; i++) {
+                            formData.append("inputfile", file[i]);
+                        }
+                    }
+                    formData.append("postmessage", postmessage);
+
+                    if (postmessage.trim() == '' && file.length === 0) {
+                        return false;
+                    }
+                        else{
+                        $.ajax({
+                            type: "POST",
+                            url: "/CreatePost/InsertPost",
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                if (response.id == 1) {
+                                    location.reload();
+                                }
+                                else if (response.id == 404) {
+                                    window.location.href = "/CompanyRegister/Error_View";
+                                }
+                            },
+                            failure: function (response) {
+                                bootbox.alert("Process failed!! Please try again.");
+                            },
+                            error: function (response) {
+                                bootbox.alert("Error!! Sorry for your inconvinience.");
+                            }
+                        });
+                    }
+
+                });
+        });
+
+
+    </script>
+    <script>
+        function myFunction() {
+            $(document).ready(function () {
+                var x = document.getElementById("latestgroup");
+                if (x.style.display === "none") {
+                    x.style.display = "block";
+                } else {
+                    x.style.display = "none";
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/CreateEvent/GroupDisplay",
+                    success: function (response) {
+                     if(response.id==404)
+                        {
+                            window.location.href = "/CompanyRegister/Error_View";
+                            
+                        }
+                        var groupresult = $.parseJSON(response);
+                        var group = "";
+                        for (var i = 0; i < groupresult.length; i++) {
+                            group += '<a href="#" onclick="groupView(' + groupresult[i].GroupId + ')" style="font-size:15px;">' + groupresult[i].GroupName + '</a></br>'
+                        }
+                       
+                        $('#latestgroup').html(group);
+                    },
+                    failure: function (response) {
+                        bootbox.alert("Process failed!! Please try again.");
+                    },
+                    error: function (response) {
+                        bootbox.alert("Error!! Sorry for your inconvinience.");
+                    }
+                });
+            });
+        }
+    </script>
+    <script>
+        function SettingsFunction() {
+
+                var x = document.getElementById("settingsdisplay");
+                if (x.style.display === "none") {
+                    x.style.display = "block";
+                } else {
+                    x.style.display = "none";
+                }}
+
+        function EventFunction() {
+            $(document).ready(function () {
+                var x = document.getElementById("eventdisplay");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+       x.style.display = "none";
+                }
+    $.ajax({
+        type: "POST",
+        url: "/CreateEvent/EventDisplay",
+        success: function (response) {
+            var eventresult = $.parseJSON(response);
+            var event = "";
+            for (var i = 0; i < eventresult.length; i++) {
+                event += '<a href="#" onclick="eventView(' + eventresult[i].EventId + ')" style="font-size:15px">' + eventresult[i].EventName + '</a></br>'
+            }
+            $('#eventdisplay').html(event);
+        },
+        failure: function (response) {
+            bootbox.alert("Process failed!! Please try again.");
+        },
+        error: function (response) {
+            bootbox.alert("Error!! Sorry for your inconvinience.");
+        }
+    });
+            });
+}
+    </script>
+    <script>
+    function FuncCommentPost(id) {
+        var commenttext = document.getElementById("sub"+id).value;
+                        if (commenttext.trim() !=='') {
+                            $.ajax({
+                                type: "POST",
+                                url: "/CreatePost/InsertComment",
+                                data: { CommentText: commenttext ,PostId:id},
+                                success: function (response) {
+                                    if (response.id == 1) {
+                                        location.reload();
+                                    }
+                                    else if (response.id == 404) {
+                                        window.location.href = "/CompanyRegister/Error_View";
+                                    }
+                                },
+                                failure: function (response) {
+                                    bootbox.alert("Process failed!! Please try again.");
+                                },
+                                error: function (response) {
+                                    bootbox.alert("Error!! Sorry for your inconvinience.");
+                                }
+                            });
+                        }
+
+            }
+    </script>
+    <script>
+    function ShowComments(show) {
+        $(document).ready(function () {
+            var postid = show;
+            var div = document.getElementById("div"+show);
+            if ( div.style.display=="none") {
+                              div.style.display = "block" ;
+            }
+            else
+            {
+
+                div.style.display = "none" ;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/CreatePost/ShowComment",
+                data:{showPost:show},
+                success: function (response) {
+                    var result = $.parseJSON(response);
+                    $(div).html('');
+                    if (result.length > 0) {
+                        div.innerHTML += '</br></br>'
+                        for (i = 0; i < result.length; i++) {
+
+                            div.innerHTML += '<span></hr></span><span style="font-weight:bold;color: #1967be;" class="fa fa-user" >&nbsp;&nbsp;' + result[i].commnentdBy + '</span>&nbsp;&nbsp;<span style="float:right;margin-right:50px;font-weight:bold;color: #1967be; "class="fa fa-calendar">&nbsp;' + result[i].CommentedDate + '</span></br></br>';
+                            div.innerHTML += '<span style="font-size:16px;" >&nbsp;&nbsp;' + result[i].Comment + '</span>';
+                            div.innerHTML += '</br>'
+                            div.innerHTML += '<span style="float:right;margin-right:150px"><label onclick="Replay(' + result[i].CommentId + ',' + result[i].CommentId+i+ '  )" >Reply</label><br></span></br>';
+                            div.innerHTML += '</br>'
+                            div.innerHTML += '<textarea class="form-control" style="width:350px;display:none;margin-left:6px;" id="' + result[i].CommentId + '" style="width:500px" placeholder="Write a Reply..."></textarea><br>';
+                            div.innerHTML += '<input type="button"value="Reply" class="btn btn-primary" id=' + result[i].CommentId+i+ ' style="width:100px;display:none;"  onclick="Replaytext(' + result[i].CommentId + ')" /><br>';
+                            div.innerHTML += '<div id="div' + result[i].CommentId + '"></div></div>';
+
+
+                        }
+                    }
+                   
+                },
+                failure: function (response) {
+                    bootbox.alert("Process failed!! Please try again.");
+                },
+                error: function (response) {
+                    bootbox.alert("Error!! Sorry for your inconvinience.");
+                }
+            });
+        })
+    }
+
+    </script>
+    <script>
+    function Replay(textId, buttonId) {
+        var text = document.getElementById(textId);
+        var button = document.getElementById(buttonId);
+        var div = document.getElementById("div" + textId);
+        if (text.style.display === "none" && button.style.display=="none" && div.style.display=="none") {
+            text.style.display = "block" ;
+            button.style.display = "block" ;
+            div.style.display = "block" ;
+        }
+        else
+        {
+            text.style.display = "none" ;
+            button.style.display = "none" ;
+            div.style.display = "none" ;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/CreatePost/ShowProfileReplays",
+            data: { commentid: textId },
+            success: function (response) {
+                var result = $.parseJSON(response);
+                $(div).html('');
+                if (result.length > 0) {
+                    div.innerHTML += '</br>'
+                    for (i = 0; i < result.length; i++) {
+                     
+                        div.innerHTML += '<span style="font-weight:bold;margin-left:100px;color: #1967be;" class="fa fa-user" >&nbsp;&nbsp;' + result[i].RepaliedBy + '</span>&nbsp;&nbsp;<span style="float:right;margin-right:30px;font-weight:bold;color: #1967be; "class="fa fa-calendar">&nbsp;' + result[i].RepaliedDate + '</span></br></br>';
+                        div.innerHTML += '<span style="font-size:16px;margin-left:100px;" >&nbsp;&nbsp;' + result[i].Replay + '</span></br></br></br></br>';
+                   
+                    }
+                }
+
+            },
+            failure: function (response) {
+                bootbox.alert("Process failed!! Please try again.");
+            },
+            error: function (response) {
+                bootbox.alert("Error!! Sorry for your inconvinience.");
+            }
+        });
+    };
+    </script>
+    <script>
+    function Replaytext(CommentId) {
+        var commenttext = document.getElementById(CommentId).value;
+        if (commenttext.trim() != '') {
+            $.ajax({
+                type: "POST",
+                url: "/CreatePost/InsertReplay",
+                data: { CommentId: CommentId, CommentText: commenttext },
+                success: function (response) {
+                    if (response.id == 1) {
+                        location.reload();
+                    }
+                    else if (response.id == 404) {
+                        window.location.href = "/CompanyRegister/Error_View";
+                    }
+                },
+                failure: function (response) {
+                    bootbox.alert("Process failed!! Please try again.");
+                },
+                error: function (response) {
+                    bootbox.alert("Error!! Sorry for your inconvinience.");
+
+                }
+            });
+        }
+        else
+        {
+            return false;
+        }
+    };
+    </script>
+    <script>
+
+        function Funclike(like)
+        {
+            var id = like;
+            $.ajax({
+                type: "POST",
+                url: "/CreatePost/Insertlike",
+                data: { PostId:like },
+                success: function (response) {
+                    if (response.id == 1) {
+                        location.reload();
+                    }
+                    else if (response.id == 404) {
+                        window.location.href = "/CompanyRegister/Error_View";
+                    }
+
+                },
+                failure: function (response) {
+                    bootbox.alert("Process failed!! Please try again.");
+                },
+                error: function (response) {
+                    bootbox.alert("Error!! Sorry for your inconvinience.");
+                }
+
+            });
+        }
+        function Funcdislike(dislike) {
+            var id = dislike;
+
+            $.ajax({
+                type: "POST",
+                url: "/CreatePost/Insertdislike",
+                data: { PostId: dislike },
+                success: function (response) {
+                    if (response.id == 1) {
+                        location.reload();
+                    }
+                    else if (response.id == 404) {
+                        window.location.href = "/CompanyRegister/Error_View";
+                    }
+
+
+                },
+                failure: function (response) {
+                    bootbox.alert("Process failed!! Please try again.");
+                },
+                error: function (response) {
+                    bootbox.alert("Error!! Sorry for your inconvinience.");
+                }
+            });
+        }
+    </script>
+    <script>
+        function eventView(EventId) {
+            $.ajax({
+                type: "POST",
+                url: "/CreateEvent/Eventdata",
+                data: { EventId: EventId },
+                success: function (response) {
+                    if (response.id == 1) {
+                         window.location.href = '@Url.Action("EventDetails", "CreateEvent")';
+                    }
+                    else if (response.id == 404) {
+                        window.location.href = "/CompanyRegister/Error_View";
+                    }
+
+
+                },
+                failure: function (response) {
+                   bootbox.alert("Process failed!! Please try again.");
+                },
+                error: function (response) {
+                   bootbox.alert("Error!! Sorry for your inconvinience.");
+
+                }
+            });
+        };
+    </script>
+    <script>
+        function groupView(GroupId) {
+            $.ajax({
+                type: "POST",
+                url: "/CreateEvent/Groupdata",
+                data: { GroupId: GroupId },
+                success: function (response) {
+                    if (response.id == 1) {
+                        window.location.href = '@Url.Action("GroupDetails", "CreateEvent")';
+                    }
+                    else if (response.id == 404) {
+                        window.location.href = "/CompanyRegister/Error_View";
+                    }
+
+                },
+                failure: function (response) {
+                   bootbox.alert("Process failed!! Please try again.");
+                },
+                error: function (response) {
+                   bootbox.alert("Error!! Sorry for your inconvinience.");
+
+                }
+            });
+
+        };
+    </script>
+    <script>
+     $(document).ready(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/CreatePost/ProfileDetails",
+                        success: function (response) {
+                            var showresult = $.parseJSON(response);
+                            var image = '';
+                            for (var i = 0; i < showresult.length; i++) {
+                                var name = showresult[i].Name;
+                                image += '<img src="' + showresult[i].ImageUrl + '"style="height: 150px;width: 150px;" " alt="" />';
+                                document.getElementById("profileimage").innerHTML = image;
+                                $('#name').text(name);
+                                                      }
+                        },
+                        failure: function (response) {
+                            bootbox.alert("Process failed!! Please try again.");
+                        },
+                        error: function (response) {
+                            bootbox.alert("Error!! Sorry for your inconvinience.");
+                        }
+                    });
+
+
+     });
+    </script>
+    <script>
+    
+        $("#UploadFile").on("click", function () {
+                $("#inputfile").trigger("click");
+            });
+   
+    </script>
+    <script>
+      
+        function showImageUpload() {
+            var x = document.getElementById("inputfile");
+            if (x.style.display === "none") {
+                $("#inputfile").click();
+               $("#inputfile").fadeIn();
+              
+            } else {
+                $("#inputfile").click();
+            }
+        }
+    </script>
+    <script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/CreatePost/showAllPost",
+            async:true,
+            success: function (response) {
+                var postResult = $.parseJSON(response.postList);
+                var imageList = $.parseJSON(response.postImages);
+                var htmlTextPost = "";
+                if (postResult.length != 0)
+                {
+                    htmlTextPost += '<div background-color:whitesmoke;>';
+                    for (var j = 0; j < postResult.length; j++) {
+                      
+                        htmlTextPost += '<div class="col-md-10" ><img src="' + postResult[j].ImageUrl + '" id="Image" style="height:8%;width: 8%;" alt=""  /><span style="margin-left:0px; font-weight:bold;color: #1967be;" &nbsp;>' + postResult[j].FullName + '</span><br>';
+                        htmlTextPost += '<table style="float:right;margin-right:0px;right:0px;"><tr><td><div><div><span style=" font-weight:bold;color: #1967be;" class="fa fa-calendar">&nbsp;' + postResult[j].CreatedDate + '&nbsp;</span></div></div></div></td><td><div  ><div><span style=" font-weight:bold;color: #1967be;" class="fa fa-clock-o">&nbsp;&nbsp;' + postResult[j].CreatedTime + '</span></div></div></div></td></tr></table><br><br>';
+                       
+                        if (postResult[j].PostMessage != "") {
+                            htmlTextPost += '<div class="col-md-10"><div style="text-align: justify;width:150%;"><span style="font-size:18px;font-weight:normal;">' + postResult[j].PostMessage + '</span></div></div></div><br><br>';
+                            
+                        }
+                        for (var i = 0; i < imageList.length; i++)
+                        {
+                            if (imageList[i].PostUrl != "") {
+                                if (imageList[i].FK_PostId == postResult[j].PostId) {
+                                    var fileExtension = imageList[i].PostUrl.split('.').pop();
+
+                                    if (fileExtension == 'mp4' || fileExtension == '3gp') {
+                                        htmlTextPost += '<video controls style="width:100%;height:100%" src="' + imageList[i].PostUrl + '" type="video/mp4 , video/3gpp"  /><br><br><br>';
+                                    }
+                                    else if (fileExtension == 'jpg' || fileExtension == 'png'|| fileExtension == 'jpeg') {
+
+                                        htmlTextPost += '<img src="' + imageList[i].PostUrl + '" id="Image" style="height:100%;width: 100%;" alt=""  /><br><br><br>';
+                                    }
+
+                                }
+                            }
+                        }
+                     
+                        if (postResult[j].LikeCount != "") {
+                            
+                            htmlTextPost += '<div class="col-md-10" ><div><span>' + postResult[j].LikeCount + '</span><span class="glyphicon glyphicon-thumbs-up"></span></div></div></div><br>&nbsp;';
+                        }
+                        
+                       
+                        htmlTextPost += '<table><tr><td><div class="col-md-10" ><div><span><button class="btn btn-default" style="outline-width:initial; height:25px;" id=' + postResult[j].PostId + ' onclick="Funclike(' + postResult[j].PostId + ')"><i class="glyphicon glyphicon-thumbs-up"></i></button></span></div></div></div></td><td><div  ><div><span><button class="btn btn-default" style="outline-width:initial; height:25px;" id=' + postResult[j].PostId + ' onclick="Funcdislike(' + postResult[j].PostId + ')"><i class="glyphicon glyphicon-thumbs-down"></i></button></span></div></div></div></span></div></div></div></td></tr></table><br>';
+                        htmlTextPost += '<div class="form-group"><textarea class="form-control" style="vertical-align:top;width:350px" id="sub' + postResult[j].PostId + '" style="width:500px" placeholder="Write a comment..."></textarea><br>';
+                        htmlTextPost += '<input type="button"value="comment" class="btn btn-primary" style="margin-left:2px"  onclick=" return FuncCommentPost(' + postResult[j].PostId + ')"/> </div>';
+                        htmlTextPost += '<br><div class="col-md-10" ><div><span>  <label onclick=" return ShowComments(' + postResult[j].PostId + ')" style="cursor:pointer;">ViewComments</label></span></div></div></div><br><br>';
+                        
+                        htmlTextPost += '<div class="col-md-10" ><div><span> <div  id="div' + postResult[j].PostId + '"> </div> </span></div></div></div><br><br>';
+                     
+                      
+                    }
+                 
+                    htmlTextPost += '</div>';
+                }
+                $('#postShow').html(htmlTextPost);
+            },
+            failure: function (response) {
+
+            },
+            error: function (response) {
+
+            }
+        });
+    });
+
+    </script>
+    
+</head>
+<body>
+    <section>
+        <div id="contain" class="container">
+            <div class="row">
+                <div class="col-md-2 static">
+                    <div class="card">
+                        <div id="profileimage"></div>
+                        <h4><div id="name"></div></h4>
+
+                    </div>
+
+                    <div id="usermenu" class="card" style="margin-top:10px;width:165px;">
+                        <a href="@Url.Action("AddGroup","Group")" style="font-size:15px;">CreateGroup&nbsp;<i class="fa fa-users"></i></a>
+
+                        <a href="@Url.Action("ProfilePost","UserRegister")" style="font-size:15px;">ViewProfile&nbsp;<i class="fa fa-user"></i></a>
+
+                        <a href="@Url.Action("CreateEvent","CreateEvent")" style="font-size:15px;">Create Event&nbsp;<i class="fa fa-calendar"></i></a>
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            myFunction();
+                            EventFunction();
+                            SettingsFunction();
+                        });
+                        </script>
+                    <div class="panel panel-default groups" style="margin-top:10px">
+                        <div class="panel-heading" onclick="myFunction()" style="cursor:pointer; font-weight: bold; ">
+                            <h3 class="panel-title">Groups</h3>
+                        </div>
+                        <div class="panel-body" id="latestgroup" style="display:none;">
+                            <div class="clearfix"></div>
+
+                        </div>
+                    </div>
+                    <div class="panel panel-default groups" style="margin-top:10px">
+                        <div class="panel-heading" onclick="EventFunction()" style="cursor:pointer;">
+                            <h3 class="panel-title">UpCommingEvents</h3>
+                        </div>
+                        <div class="panel-body" id="eventdisplay" style="display:none;">
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default groups" style="margin-top:10px">
+                        <div class="panel-heading" onclick="SettingsFunction()" style="cursor:pointer;">
+                            <h3 class="panel-title">Settings</h3>
+                        </div>
+                        <div class="panel-body" id="settingsdisplay" style="display:none;">
+                            <a href="@Url.Action("changePassword","UserRegister")" style="font-size:14px;">Change Password&nbsp;<i class="fa fa-key"></i></a>
+                            <a href="@Url.Action("ChangeProfileImage","UserRegister")" style="font-size:14px;">Profile Image&nbsp;<i class="fa fa-camera"></i></a>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="imgupload" style="display:none; background-color:cornflowerblue;">
+                  
+                </div>
+
+                <div class="col-md-7" id="maindiv">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"></h3>
+                        </div>
+                        <div class="panel-body">
+                            <form style="padding:5px">
+                                <div class="form-group" style="padding:2px">
+                                    <label>Create Post</label>
+                                    <textarea rows="4" class="form-control" cols="50" id="postmessage"> </textarea>
+                                </div>
+
+                                <input type="submit" id="submit" class="btn btn-primary" value="Post" />
+                                <div class="pull-right">
+                                    <div class="btn-toolbar">
+
+                                        <input type="file" id="inputfile" accept="image/*,video/*" style="display:none;" multiple="multiple"/ >
+                                  
+                                            <button type="button" class="btn btn-primary" id="UploadFile" onclick="showImageUpload()"/>
+                                                <i class="fa fa-file-image-o"></i>Upload
+                                            </button>
+                                       
+                                       
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="panel panel-default post">
+                        <div class="panel-body" id="postShow">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

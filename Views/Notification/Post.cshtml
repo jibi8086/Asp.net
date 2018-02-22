@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "Post";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Notification/PostView",
+            success: function (response)
+            {
+                var profileresult = $.parseJSON(response.postList);
+                var profileImageList = $.parseJSON(response.postImages);
+                var htmlNotiPost = "";
+               
+                if (profileresult.length != 0)
+                {
+                    htmlNotiPost += '<div background-color:whitesmoke;>';
+                    for (var j = 0; j < profileresult.length; j++) {
+                        htmlNotiPost += '<table ><tr><td><div><div><span style=" font-weight:bold;color: #1967be;float:left;padding-left: 40px;" class="fa fa-calendar">&nbsp;' + profileresult[j].CreatedDate + '&nbsp;</span></div></div></div></td><td><div  ><div><span style=" font-weight:bold;color: #1967be;" class="fa fa-clock-o">&nbsp;&nbsp;' + profileresult[j].CreatedTime + '</span></div></div></div></td></tr></table><br>';
+                        if (profileresult[j].PostMessage != "") {
+                            htmlNotiPost += '<div class="col-md-10" style="padding-left: 40px; padding-right: 40px;"><div style="text-align: justify;width:120%;"><span style="font-size:18px;font-weight:normal;">' + profileresult[j].PostMessage + '</span></div></div></div><br><br>';
+                        }
+                        for (var z = 0; z < profileImageList.length; z++) {
+                            if (profileImageList[z].PostUrl != "")
+                            {
+                                if (profileImageList[z].FK_PostId == profileresult[j].PostId)
+                                {
+                                    var fileExtension = profileImageList[z].PostUrl.split('.').pop();
+
+                                    if (fileExtension == 'mp4')
+                                    {
+                                        htmlNotiPost += '<video controls style="width:100%;height:100%;padding-left: 40px; padding-right: 40px;" src="' + profileImageList[z].PostUrl + '" type="video/mp4" poster="' + profileImageList[z].PostUrl + '" /><br><br><br>';
+                                    }
+                                    else if (fileExtension == 'jpg' || fileExtension == 'png') {
+                                        htmlNotiPost += '<img src="' + profileImageList[z].PostUrl + '" id="Image" style="height:100%;width: 100%;padding-left: 40px; padding-right: 40px;" alt=""  /><br><br><br>';
+                                    }
+                                }
+                            }
+                        }
+                        htmlNotiPost += '<div class="col-md-10" ><div><span style="padding-left: 40px;">' + profileresult[j].LikeCount + '</span><span class="glyphicon glyphicon-thumbs-up"></span></div></div></div><br>&nbsp;';
+                        htmlNotiPost += '<br><div class="col-md-10" ><div><span style="font-weight:bold;font-size:17px;cursor:pointer;padding-left: 40px;">  <label onclick="ShowComments(' + profileresult[j].PostId + ')">ViewComments</label></span></div></div></div><br><br>';
+                        htmlNotiPost += '<div class="col-md-10" ><div><span> <div  id="' + profileresult[j].PostId + '"> </div> </span></div></div></div><br><br>';
+
+                        htmlNotiPost += '</br>';
+                    }
+                    htmlNotiPost += '</div>';
+                }
+
+                $('#profileanswers').html(htmlNotiPost);
+            },
+            failure: function (response) {
+
+            },
+            error: function (response) {
+
+            }
+        });
+    });
+
+</script>
+<script>
+        function ShowComments(id) {
+            $(document).ready(function () {
+                var postid = id;
+                var div = document.getElementById(id);
+                if (div.style.display == "none") {
+                    div.style.display = "block";
+                }
+                else {
+
+                    div.style.display = "none";
+                }
+                  $.ajax({
+                   type: "POST",
+                   url: "/UserRegister/ShowProfileComment",
+                   data: { Postid: postid },
+                   success: function (response) {
+                       var result = $.parseJSON(response);
+
+                       $(div).html('');
+                       if (result.length > 0) {
+                           div.innerHTML += '</br>'
+                           for (i = 0; i < result.length; i++) {
+                               div.innerHTML += '<span></hr></span><span style="font-weight:bold;float:left;margin-left:50px;color: #1967be;" class="fa fa-user" >&nbsp;&nbsp;' + result[i].commnentdBy + '</span>&nbsp;&nbsp;<span style="float:right;margin-right:150px;font-weight:bold;color: #1967be; "class="fa fa-calendar">&nbsp;' + result[i].CommentedDate + '</span><span></span></br></br>';
+                               div.innerHTML += '<span style="font-size:16px;float:left;margin-left:50px" >&nbsp;&nbsp;' + result[i].Comment + '</span>';
+                               div.innerHTML += '</br>';
+                             
+                               div.innerHTML += '</br>';
+                               div.innerHTML += '<span style="float:right;margin-right:300px;font-weight:bold;font-size:15px;"><label  onclick="ShowReply(' + result[i].CommentId + '  )" >View Replies</label><br></span></br></br>';
+                               div.innerHTML += '</br>';
+                               div.innerHTML += '<div id="div' + result[i].CommentId + '"></div></div>';
+                           }
+                       }
+                   },
+                   failure: function (response) {
+                       bootbox.alert("Process failed!! Please try again.");
+                   },
+                   error: function (response) {
+                       bootbox.alert("Error!! Sorry for your inconvinience.");
+                   }
+               });
+            })
+        }
+
+</script>
+<script>
+        function ShowReply(CommentId) {
+            $(document).ready(function () {
+                var commentid = CommentId;
+                var div = document.getElementById("div" + CommentId);
+                if (div.style.display == "none") {
+                    div.style.display = "block";
+                }
+                else {
+
+                    div.style.display = "none";
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/UserRegister/ShowProfileReplay",
+                    data: { commentid: commentid },
+                    success: function (response) {
+                        var result = $.parseJSON(response);
+                        $(div).html('');
+                        if (result.length > 0) {
+                            div.innerHTML += '</br>'
+                            for (i = 0; i < result.length; i++) {
+                                div.innerHTML += '<span style="font-weight:bold;margin-left:100px;color: #1967be;" class="fa fa-user" >&nbsp;&nbsp;' + result[i].RepaliedBy + '</span>&nbsp;&nbsp;<span style="float:right;margin-right:30px;font-weight:bold;color: #1967be; "class="fa fa-calendar">&nbsp;' + result[i].RepaliedDate + '</span></br></br>';
+                                div.innerHTML += '<span style="font-size:16px;margin-left:100px;" >&nbsp;&nbsp;' + result[i].Replay + '</span></br></br></br></br>';
+                                div.innerHTML += '</hr>';
+                            }
+                        }
+
+                    },
+                    failure: function (response) {
+                        bootbox.alert("Process failed!! Please try again.");
+                    },
+                    error: function (response) {
+                        bootbox.alert("Error!! Sorry for your inconvinience.");
+                    }
+                });
+            });
+            }
+</script>
+<body>
+    <div class="container">
+        @using (Html.BeginForm(new { enctype = "multipart/form-data" }))
+            {
+            <div class="profile-card">
+
+
+
+                <div class="panel panel-default post" style="margin-top:30px;">
+              
+                    
+                    <section>
+                        <div class="container">
+                            <div class="row">
+
+
+                            </div>
+                            <div class="col-md-10" id="maindiv">
+                                <div class="">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title"></h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <form style="padding:5px">
+                                            <div class="form-group" style="padding:2px"></div>
+
+                                            <div class="pull-right">
+
+
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                    <div class="">
+                                        <div class="panel-body" id="profileanswers">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+
+

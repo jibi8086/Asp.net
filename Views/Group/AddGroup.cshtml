@@ -1,0 +1,248 @@
+﻿@model NuNetwork.Models.group
+
+@{
+    ViewBag.Title = "Create New Group";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+    //   Layout = null;
+}
+@*Search*@
+<script>
+            $(document).ready(function () {
+                $("#CityName").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: "/NewsFeeds/Search",
+                            type: "POST",
+                            async: false,
+                            cache: false,
+                            dataType: "json",
+                            data: { prefix: request.term },
+                            success: function (data) {
+                                response($.map(data, function (item) {
+
+                                    return { label: item.Name + " " + item.LastName + "", id: item.Sr_no };
+                                }))
+                            }
+                        })
+                    },
+                    select: function (event, ui) {
+                        var label = ui.item.id;
+                        $("#CityName").val("");
+                        $.ajax({
+
+                            type: "POST",
+                            async: false,
+                            cache: false,
+                            url: "/UserRegister/Search",
+                            data: { SearchValue: label },
+                            success: function (response) {
+                                if (response.id == 1) {
+                                    window.location.href = "/UserRegister/UserProfile";
+                                }
+                                else if (response.id == 404)
+                                {
+                                    window.location.href = "/CompanyRegister/Error_View";
+                                }
+                            },
+                            failure: function (response) {
+
+                            },
+                            error: function (response) {
+
+                            }
+                        });
+
+                    }
+                });
+            });
+</script>
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("#txtGroup").focusout(function () {
+                var groupName = $("#txtGroup").val();               
+                $.ajax({
+                    type: "POST",
+                    url: "/Group/GroupValidation",
+                    data: { groupName: groupName },
+                    success: function (response) {
+                        if (response.id == 0) {
+                            alert("This Group Name already exists");
+                            $("#txtGroup").val("");
+                        }
+                    },
+                    failure: function (response) {
+
+                    },
+                    error: function (response) {
+
+                    }
+                });
+            });
+        });
+
+</script>
+@*Group Name Validation*@
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        validationLength = 18;
+        $('#txtGroup').on('keyup keydown change', function () {
+            if ($(this).val().length > validationLength) {
+                val = $(this).val().substr(0, $(this).val().length - 1);
+                $(this).val(val);
+            };
+        });
+        });
+
+</script>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("input[type=button]").click(function () {
+                var formData = new FormData();
+                var tagIds = $("#tag").val();
+                tagIds = tagIds + ',';
+                var txtGroupName = $("#txtGroup").val();
+                var file = $("#inputfile").get(0).files;                
+                if (file.length > 0)
+                {
+                  
+                        formData.append("inputfile", file[0]);
+                    
+                       
+                }
+                formData.append("tagIds", tagIds);
+                formData.append("txtGroup", txtGroupName);
+                if (tagIds != "," && txtGroupName != '') {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Group/CreateGroup",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response.id == 1) {
+                                if (confirm("Group created") == true) {
+                                    window.location.href = "/CreatePost/CreatePost";
+                                } else {
+                                    alert("Group Creation Failed");
+                                }
+                            }
+                            else {
+                                alert("group creation failed");
+                            }
+                        },
+
+                        failure: function (response) {
+
+                        },
+                        error: function (response) {
+                        }
+                    });
+                }
+                else {
+                    alert('please fill all feilds');
+                }
+        });
+        });
+
+</script>
+<script type="text/javascript">
+            $(document).ready(function () {
+                $.ajax({
+                    url: '/Group/SearchWithName/',
+                    dataType: 'json',
+                    success: function (data) {
+                        var tagObjects = JSON.parse(data);
+                        $("#tag").tokenInput(tagObjects,{
+                            crossDomain: false,
+                            preventDuplicates: true
+                        });
+                    }
+                });
+
+        });
+</script>
+    <script type="text/javascript">
+           function ValidateControl() {
+               if ($("#groupName").val() == "") {
+                   $("#groupName").addClass("form-control is-invalid");
+               }
+    }
+</script>
+
+<script>
+
+        $(document).ready(function () {
+
+            $("#btnUpload").click(function () {
+                var formData = new FormData();
+                var file = $("#btnUpload").get(0).files;
+                    if (file.length > 0)
+                    {
+                      formData.append("inputfile", file[0]);
+                    }
+                        $.ajax({
+                            type: "POST",
+                            url: "/CreatePost/InsertPost",
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                alert("Successfully Posted ");
+                            },
+                            failure: function (response) {
+                                bootbox.alert("Process failed!! Please try again.");
+                            },
+                            error: function (response) {
+                                bootbox.alert("Error!! Sorry for your inconvinience.");
+                            }
+                        });
+                    //}
+
+                });
+        });
+
+
+</script>
+@*<h2>Add Group Members</h2>*@
+<html>
+<head>
+
+    </head>
+<body id="AddGroup" background="~/Images/LoginBackground.jpg;">
+
+
+     <div class="jumbotron addGroupBackground">
+            <h2 class="addGroupBackgroundColour">Create New Group.</h2>
+            <hr />
+            <div class="form-group groupFontColor">
+                &nbsp&nbsp&nbspGroup Name
+                <div class="col-md-10" style="color:black;">
+                    @Html.TextBoxFor(m => m.txtGroup, new { @class = "addgroupName" })
+                </div>
+            </div>
+
+            <div class="form-group groupFontColor">
+                &nbsp&nbsp&nbspSearch Name
+                <div class="col-md-10">
+                    <input type="text" ng-model="test" id="tag" placeholder="Enter Group Member" class="form-control addGrouptxt">
+                </div>
+                </div>
+         <div class="groupFontColor">
+             &nbsp&nbsp&nbspChoose Group Photo
+             <div class="col-md-10" >
+                 <input type="file" id="inputfile" class="addGroupphoto" accept="image/jpeg ,image/png" />
+             </div>
+             <div style="margin-left:20px">
+                 <input type="button" id="post" class="btn btn-primary" value="Create" onclick="ValidateControl();" />
+             </div>
+         </div>
+</div>
+</body>
+    </html>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+}

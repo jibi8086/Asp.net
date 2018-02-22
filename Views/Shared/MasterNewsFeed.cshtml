@@ -1,0 +1,1373 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@Session["name"]-NuNetwork-</title>
+	<meta charset="utf-8" />
+    <link href="~/Css/NewsFeedmin.css" rel="stylesheet" />
+    <link href="~/Css/newsfeed.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <link href="~/Css/bootstrap-cosmo.css" rel="stylesheet" />
+    <link href="~/Css/Inline.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <link href="~/Css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Css/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery_1.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <link href="~/Css/Createpost.css" rel="stylesheet" />
+    <link href="~/Css/poststyle.css" rel="stylesheet" />
+    <link href="~/Css/font-awesome.min.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/respond.js"></script>
+    <script src="~/Scripts/bootbox.min.js"></script>
+    <link href="~/Css/ProfileStyle.css" rel="stylesheet" />
+    @*bysanal*@
+    <link href="~/Css/jquery.fancybox.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.fancybox.js"></script>
+    @*@*created by jibin*@
+    <script src="~/Scripts/angular.min.js"></script>
+    <link href="~/Css/Search.css" rel="stylesheet" />
+           @*autocompletion token*@
+    <link href="~/Css/token-input-facebook.css" rel="stylesheet" />
+    <link href="~/Css/token-input.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.tokeninput.js"></script>
+
+  
+
+    @*chat assets start*@
+    <link type="text/css" rel="stylesheet" href="~/Css/ChatStyle.css" />
+  
+    @*NotificationStyle*@
+    <link href="~/Css/NotificationStyle.css" rel="stylesheet" />
+
+
+
+    <script src="~/Scripts/ui/jquery.ui.core.js"></script>
+    <script src="~/Scripts/ui/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/ui/jquery.ui.mouse.js"></script>
+    <script src="~/Scripts/ui/jquery.ui.draggable.js"></script>
+    <script src="~/Scripts/ui/jquery.ui.resizable.js"></script>
+
+
+   
+    <script src="~/Scripts/jquery.signalR-2.2.2.js"></script>
+    <script src="~/Scripts/jquery.signalR-1.0.0.js"></script>
+
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        var urlRegex = /(https?:\/\/[^\s]+)/g;
+        var a = [[':happy;', '<img src="../Images/emoji/smile5.png"  class="smile"/>'],
+                [':sick;', "<img src='../Images/emoji/sick.png' class='smile' />"],
+                [':sick:', "<img src='../Images/emoji/sick.png' class='smile' />"],
+                [':happy:', '<img src="../Images/emoji/smile5.png"  class="smile"/>'],
+                [':)', '<img src="../Images/emoji/smile5.png"  class="smile"/>'],
+                [':angry:', '<img src="../Images/emoji/angry.png"  class="smile"/>'],
+                [':bandaid:', '<img src="../Images/emoji/bandaid.png"  class="smile"/>'],
+                [':c_e_t:', '<img src="../Images/emoji/closeeyetounge.png"  class="smile"/>'],
+                [':expless:', '<img src="../Images/emoji/expressionless.png"  class="smile"/>'],
+                [':|', '<img src="../Images/emoji/expressionless.png"  class="smile"/>'],
+               [':grin:', '<img src="../Images/emoji/grin.png"  class="smile"/>'],
+                [':glass:', '<img src="../Images/emoji/glass.png"  class="smile"/>'],
+                [':grinf:', '<img src="../Images/emoji/grinning-face_1f600.png"  class="smile"/>'],
+                [':hrteye:', '<img src="../Images/emoji/hearteye.png"  class="smile"/>'],
+                [':hugface:', '<img src="../Images/emoji/hugging-face_1f917.png"  class="smile"/>'],
+                [':kis1:', '<img src="../Images/emoji/kis1.png"  class="smile"/>'],
+                [':kiss2:', '<img src="../Images/emoji/kiss2.png"  class="smile"/>'],
+                [':*', '<img src="../Images/emoji/kiss2.png"  class="smile"/>'],
+                [':laugh:', '<img src="../Images/emoji/laugh.png"  class="smile"/>'],
+                [':laugh2:', '<img src="../Images/emoji/laugh2.png"  class="smile"/>'],
+                [':D', '<img src="../Images/emoji/laugh2.png"  class="smile"/>'],                
+                [':loudcry:', '<img src="../Images/emoji/loudcry.png"  class="smile"/>'],
+                [':lovesmile:', '<img src="../Images/emoji/lovesmile.png"  class="smile"/>'],
+                [':silent:', '<img src="../Images/emoji/silent.png"  class="smile"/>'],
+                [':sleep:', '<img src="../Images/emoji/sleep.png"  class="smile"/>'],
+                [':glass:', '<img src="../Images/emoji/glass.png"  class="smile"/>'],
+                [':smile:', '<img src="../Images/emoji/smile.png"  class="smile"/>'],
+                [':think:', '<img src="../Images/emoji/think.png"  class="smile"/>'],
+                [':throwkiss:', '<img src="../Images/emoji/throwkiss.png"  class="smile"/>'],
+                [':tounge:', '<img src="../Images/emoji/tounge.png"  class="smile"/>'],
+                [':triumph:', '<img src="../Images/emoji/triumph.png"  class="smile"/>'],
+                [':weary:', '<img src="../Images/emoji/weary.png"  class="smile"/>'],
+                [':winking:', '<img src="../Images/emoji/winking.png"  class="smile"/>'],
+                [';)', '<img src="../Images/emoji/winking.png"  class="smile"/>'],              
+                [':tearjoy:', '<img src="../Images/emoji/tearjoy.png"  class="smile"/>'],
+                [':winkingtounge:', '<img src="../Images/emoji/winkingtounge.png"  class="smile"/>'],
+        
+        ];
+ 
+
+        $(document).ready(function () {
+           
+                $("#searchName").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: "/NewsFeeds/Search",
+                            type: "POST",
+                            async: false,
+                            cache: false,
+                            dataType: "json",
+                            data: { prefix: request.term },
+                            success: function (data) {
+                                response($.map(data, function (item) {
+
+                                    return { label: item.Name + " " + item.LastName + "", id: item.Sr_no };
+                                }))
+                            }
+                        })
+                    },
+                    select: function (event, ui) {
+                        var label = ui.item.id;
+                        $("#searchName").val("");
+                        $.ajax({
+
+                            type: "POST",
+                            async: false,
+                            cache: false,
+                            url: "/UserRegister/Search",
+                            data: { SearchValue: label },
+                            success: function (response) {
+                                if (response.id == 1) {
+                                    window.location.href = "/UserRegister/UserProfile";
+                                }
+                                else {
+
+                                }
+                            },
+                            failure: function (response) {
+
+                            },
+                            error: function (response) {
+
+                            }
+                        });
+
+                    }
+                });
+            });
+    </script>
+    <script type="text/javascript">
+        var onlineusers=null;
+        var cnt=null;
+        $(function () {
+
+            setScreen(false);
+
+            var chattingHub = $.connection.chattingHub;
+
+            registerClientMethods(chattingHub);
+            grouphub(chattingHub);
+
+            $.connection.hub.start().done(function () {
+
+                registerEvents(chattingHub)
+
+            });
+
+            $.ajax({
+                type:'POST',
+                url:"/Chatting/FetchUserList",
+                data:{uId:@Session["userid"],cId:@Session["companyid"]},
+                dataType:'json',
+                success:function(result){
+                    var list=$.parseJSON(result);
+                    $('#grouplist').empty();
+
+                    for(var i=0;i<list.length;i++)
+                    {
+                        messagecount(chattingHub,list[i].UserId,list[i].Name,list[i].UserId,list[i].UserId);
+                       
+                     
+                    }
+
+                },
+                error:function()
+                {
+                    alert("Please check your Internet Connection");
+                }
+            })
+
+        });
+
+        function setScreen(isLogin) {
+
+            if (!isLogin) {
+
+                $("#divChat").hide();
+                $("#divLogin").show();
+            }
+            else {
+
+                $("#divChat").show();
+                $("#divLogin").hide();
+            }
+
+        }
+
+        function messagecount(c,u,n,ui,fid)
+        {
+            $.ajax({
+                type:'POST',
+                url:"/Chatting/MessageCount",
+                data:{uId:@Session["userid"],cId:@Session["companyid"],fId:fid},
+                dataType:'json',
+                async:false,
+                success:function(result){
+                    if(result.id!=0)
+                    {
+                        AddOfflineUser(c,u,n,ui,result.id)
+                    
+                    }
+                    else
+                    {
+                        AddOfflineUser(c,u,n,ui,"")
+                    
+                    }
+
+                    return result.id;
+                },
+                error:function()
+                {
+                    alert("Please check your Internet Connection");
+                }
+            })
+        }
+
+        function messageread(fid)
+        {
+            $.ajax({
+                type:'POST',
+                url:"/Chatting/MessageRead",
+                data:{tId:@Session["userid"],cId:@Session["companyid"],fId:fid},
+                dataType:'json',
+                async:false,
+                success:function(result){
+                   
+                },
+                error:function()
+                {
+                    alert("Please check your Internet Connection");
+                }
+            })
+        }
+        function registerEvents(chattingHub) {
+
+            $(document).ready(function () {
+                var uid=@Session["userid"];
+                var cid=@Session["companyid"]
+                var name = '@Session["name"]';
+
+
+
+                if (name.length > 0) {
+                    chattingHub.server.connect(name,uid,cid);
+                }
+                else {
+                    alert("Please login");
+                    location.reload();
+                }
+
+            });
+
+
+            $('#btnSendMsg').click(function () {
+
+                var msg = $("#txtMessage").val();
+                if (msg.length > 0) {
+
+                    var userName = $('#hdUserName').val();
+                    chattingHub.server.sendMessageToAll(userName, msg);
+                    $("#txtMessage").val('');
+                }
+            });
+
+
+            $("#txtNickName").keypress(function (e) {
+                if (e.which == 13) {
+                    $("#btnStartChat").click();
+                }
+            });
+
+            $("#txtMessage").keypress(function (e) {
+                if (e.which == 13) {
+                    $('#btnSendMsg').click();
+                }
+            });
+
+
+        }
+
+        function registerClientMethods(chattingHub) {
+
+            // Calls when user successfully logged in
+            chattingHub.client.onConnected = function (id, userName, allUsers, messages) {
+
+                setScreen(true);
+
+                window.onlineuser=allUsers;
+
+                $('#hdId').val(id);
+                $('#hdUserName').val(userName);
+                $('#spanUser').html(userName);
+
+                // Add All Users
+                for (i = 0; i < allUsers.length; i++) {
+                    if(allUsers[i].CompanyId=='@Session["companyid"]'){
+                        $("a[user-id='"+allUsers[i].UserId+"']").remove();
+                        
+                        AddUser(chattingHub, allUsers[i].ConnectionId, allUsers[i].UserName,allUsers[i].UserId);
+                }}
+
+                // Add Existing Messages
+                for (i = 0; i < messages.length; i++) {
+
+                    AddMessage(messages[i].UserName, messages[i].Message);
+                }
+
+
+            }
+
+            // On New User Connected
+            chattingHub.client.onNewUserConnected = function (id, name,cid,uid) {
+                if(cid=='@Session["companyid"]')
+                {
+                    $("div[userid='"+uid+"']").remove();
+                    $("a[user-id='"+uid+"']").remove();
+                  
+                    AddUser(chattingHub, id, name,uid);
+                }
+            }
+
+
+            // On User Disconnected
+            chattingHub.client.onUserDisconnected = function (id, userName,uid,cid) {
+
+                $("a[user-id='"+uid+"']").remove();
+                $("div[userid='"+uid+"']").remove();
+                if(cid=='@Session["companyid"]')
+                {
+                    AddOfflineUser(chattingHub,uid,userName,uid,"")
+                
+                    if(uid=='@Session["userid"]')
+                    {
+
+                        registerEvents(chattingHub);
+
+                    }
+                    else
+                    {
+
+                     //   var disc = $('<div class="disconnect">"' + userName + '" went offline.</div>');
+                    }
+                }
+                $(disc).hide();
+                $('#divusers').prepend(disc);
+                $(disc).fadeIn(200).delay(2000).fadeOut(200);
+
+            }
+
+            //groupchat recieve
+
+            chattingHub.client.groupMessageReceived=function (username, message,groupid,groupName) {
+
+                var ctrId = 'private_' + groupid;
+
+                if ($('#' + ctrId).length == 0) {
+
+                    createGroupChatWindow(chattingHub, groupid, ctrId, username,groupName);
+                }
+                var executed= false;
+                if(executed==false){
+                    $.ajax({
+                type:'POST',
+                url:"/Chatting/FetchGroupMessage",
+                data:{groupId:groupid,cId:@Session["companyid"],userId:@Session["userid"]},
+                dataType:'json',
+                success:function(result){
+                    var msg=$.parseJSON(result);
+                    $('#divGroupMessage').empty();
+
+                    for(var i=0;i<msg.length;i++)
+                    {
+                        $('#' + ctrId).find('#divGroupMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + msg[i].name + '</span>: ' + msg[i].Message + '</div>');
+                        a.forEach(function (item) {
+                            $('#' + ctrId).find('#divGroupMessage').each(function () {
+                                var text = $(this).html();
+                                $(this).html(text.replace(item[0], item[1]));
+                            });
+                        });
+
+                      
+                    }
+
+               
+                    var height = $('#divGroupMessage')[0].scrollHeight;
+                    $('#divGroupMessage').scrollTop(height);
+
+                },
+                error:function()
+                {
+                    alert("Please check your Internet Connection");
+                }
+                })
+                    executed=true;
+                }
+
+                $('#' + ctrId).find('#divGroupMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + fromUserName + '</span>: ' + message + '</div>');
+
+                a.forEach(function (item) {
+                    $('#' + ctrId).find('#divGroupMessage').each(function () {
+                        var text = $(this).html();
+                        $(this).html(text.replace(item[0], item[1]));
+                    });
+                });
+
+                var height = $('#divGroupMessage')[0].scrollHeight;
+                $('#divGroupMessage').scrollTop(height);
+
+
+            }
+            //group chat end
+            chattingHub.client.messageReceived = function (userName, message) {
+
+                AddMessage(userName, message);
+            }
+            var chatuserid;
+
+            chattingHub.client.sendPrivateMessage = function (windowId, fromUserName, message,uid) {
+               
+                $("div[id='private_"+uid+"']").remove();
+
+                var ctrId = 'private_' + windowId;
+
+                if(uid=='@Session["userid"]')
+                {
+                    tid=null;
+                }
+                else
+                {
+                    tid=uid;
+                }
+
+                if ($('#' + ctrId).length == 0 && $("div[userid='"+tid+"']").length==0) {
+
+                    createPrivateChatWindow(chattingHub, windowId, ctrId, fromUserName,uid);
+
+                }
+                var executed= false;
+                if(executed==false){
+                    $.ajax({
+                        type:'POST',
+                        url:"/Chatting/FetchMessage",
+                        data:{fromId:uid,ToId:@Session["userid"],cId:@Session["companyid"]},
+                        dataType:'json',
+                        success:function(result){
+                            var msg=$.parseJSON(result);
+                            $('#divMessage').empty();
+                            for(var i=0;i<msg.length;i++)
+                            {
+                                $("div[userid='"+uid+"']").find('#divMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + msg[i].fromname + '</span>: ' + msg[i].Message + '</div>');
+
+                                a.forEach(function (item) {
+                                    $('#' + ctrId).find('#divMessage').each(function () {
+                                        var text = $(this).html();
+                                        $(this).html(text.replace(item[0], item[1]));
+                                    });
+                                });
+
+                                var height = $('#divMessage')[0].scrollHeight;
+                                $('#divMessage').scrollTop(height);
+
+                            }
+
+                        },
+                        error:function()
+                        {
+                            alert("Please check your Internet Connection");
+                        }
+
+                    })
+                    $("div[userid='"+uid+"']").find('#divMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + fromUserName + '</span>: ' + message + '</div>');
+
+
+
+                    executed=true;
+                }
+
+                //$('#' + ctrId).find('#divMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + fromUserName + '</span>: ' + message + '</div>');
+
+                var height = $('#divMessage')[0].scrollHeight;
+                $('#divMessage').scrollTop(height);
+
+
+
+            }
+
+        }
+
+        function AddUser(chattingHub, id, name,uid) {
+
+            var userId = $('#hdId').val();
+
+            var code = "";
+
+            if (userId == id || uid== '@Session["userid"]' || $("a[user-id='"+uid+"']").length>0) {
+
+
+            }
+            else {
+
+                code = $('<a id="' + id + '" class="user" user-id="'+uid+'">' + name + '<div class="led-green" style="float:right;"></div><a>');
+
+                $(code).click(function () {
+               
+                  
+                    
+                    var id = $(this).attr('id');
+                    var uid=$(this).attr('user-id');
+                    messageread(uid);
+                    if (userId != id)
+                        OpenPrivateChatWindow(chattingHub, id, name,uid);
+
+                });
+            }
+
+            $("#divusers").append(code);
+
+        }
+        function AddOfflineUser(chattingHub, id, name,uid,cnt) {
+
+            var userId = $('#hdId').val();
+
+            var code = "";
+
+            if (userId == id || uid== '@Session["userid"]' || $("a[user-id='"+uid+"']").length>0) {
+
+
+            }
+            else {
+
+                code = $('<a id="' + id + '" class="user" user-id="'+uid+'">' + name +'<div mid="'+uid+'" class="test" style="color:red;float:right;">'+cnt+'</div></a>');
+                $(code).click(function () {
+                
+                    var uid=$(this).attr('user-id');
+                    if(cnt!=="")
+                    {
+                        messageread(uid);
+                        cnt="";
+                    }
+                    var a=$("div[mid="+uid+"]");
+                   $(this).find(".test").remove();
+                   var id = $(this).attr('id');
+                    var uid=$(this).attr('user-id');
+                    if (userId != id)
+                        OpenPrivateOfflineChatWindow(chattingHub, id, name,uid);
+
+                });
+            }
+
+            $("#divusers").append(code);
+
+        }
+
+        function AddMessage(userName, message) {
+            $('#divChatWindow').append('<div class="message"><span class="userName" style="color:#3d91e5">' + userName + '</span>: ' + message + '</div>');
+
+            var height = $('#divChatWindow')[0].scrollHeight;
+            $('#divChatWindow').scrollTop(height);
+        }
+
+        function simey(c,smile,d)
+        {
+            
+            var append=$(c).val();
+            //document.getElementById(c+"_txtPrivateMessage").text="smile";
+            $(c).val(append+" "+smile+" ");
+            $(d).fadeOut();
+        }
+        function hi(uid,smile,c)
+        {
+
+            alert(uid+smile+c);
+            //simey(uid+'_txtPrivateMessage',smile,uid+'smile_tray');
+        }
+        function OpenPrivateChatWindow(chattingHub, id, userName,uid) {
+
+            var ctrId = 'private_' + id;
+
+            if ($('#' + ctrId).length > 0) return;
+
+            createPrivateChatWindow(chattingHub, id, ctrId, userName,uid);
+            $.ajax({
+                type:'POST',
+                url:"/Chatting/FetchMessage",
+                data:{fromId:@Session["userid"],ToId:uid,cId:@Session["companyid"]},
+                dataType:'json',
+                success:function(result){
+                    var msg=$.parseJSON(result);
+                    $('#divMessage').empty();
+
+                    for(var i=0;i<msg.length;i++)
+                    {
+                        $('#' + ctrId).find('#divMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + msg[i].fromname + '</span>: ' + msg[i].Message + '</div>');
+                        a.forEach(function (item) {
+                            $('#' + ctrId).find('#divMessage').each(function () {
+                                var text = $(this).html();
+                                $(this).html(text.replace(item[0], item[1]));
+                               
+                             //   $(this).html(text.replace(urlRegex,function(url){return '+<a href="'+url+'">'+url+'</a>+';})) 
+                            });
+                        });
+                    
+
+                    }
+                     var height = $('#divMessage')[0].scrollHeight;
+                        $('#divMessage').scrollTop(height);
+
+                },
+                error:function()
+                {
+                    alert("Please check your Internet Connection");
+                }
+            })
+
+
+        }
+        function OpenPrivateOfflineChatWindow(chattingHub, id, userName,uid) {
+   
+            var ctrId = 'private_' + id;
+
+            if ($('#' + ctrId).length > 0) return;
+
+            createPrivateOfflineChatWindow(chattingHub, id, ctrId, userName,uid);
+
+            $.ajax({
+                type:'POST',
+                url:"/Chatting/FetchMessage",
+                data:{fromId:@Session["userid"],ToId:uid,cId:@Session["companyid"]},
+                dataType:'json',
+               
+                success:function(result){
+                    var msg=$.parseJSON(result);
+                    $('#divMessage').empty();
+
+                    for(var i=0;i<msg.length;i++)
+                    {
+                        $('#' + ctrId).find('#divMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + msg[i].fromname + '</span>: ' + msg[i].Message + '</div>');
+                        a.forEach(function (item) {
+                            $('#' + ctrId).find('#divMessage').each(function () {
+                                var text = $(this).html();
+                                $(this).html(text.replace(item[0], item[1]));
+
+                            });
+                        });
+                    }
+                   
+                    var height = $('#divMessage')[0].scrollHeight;
+                    $('#divMessage').scrollTop(height);
+                  
+                  
+
+                },
+                error:function()
+                {
+                    alert("Please check your Internet Connection");
+                }
+            })
+
+
+        }
+
+        function createPrivateChatWindow(chattingHub, userId, ctrId, userName,uid) {
+            var tLeft= Math.floor(Math.random()*1000);
+            $("div[userid='"+uid+"']").remove();
+            $("div[userid='"+uid+"']").remove();
+            var div = '<div id="' + ctrId + '" userid="'+uid+'" class="ui-widget-content draggable" rel="0" style="bottom:0px; left: '+tLeft+'px; z-index: 11; position: fixed;">' +
+                       '<div class="header">' +
+                          '<div  style="float:right;">' +
+                              '<img id="imgDelete"  class="dlt" src="/Images/delete.png"/>' +
+                           '</div>' +
+
+                           '<span class="selText" rel="0">' + userName + '<div id="led" class="led-green" style="float:left;left:5px;"></div></span>' +
+                       '</div>' +
+                       '<div id="divMessage" class="messageArea">' +
+
+                       '</div>' +
+                      '<div class="buttonBar">' +
+                          '<div><input id="'+uid+'_txtPrivateMessage" class="msgText" type="text"   /><input id="user" type="hidden" value="'+uid+'"/>' +
+                          '<img src="../Images/smile_icon.png" id="sml_btn" class="smileybtn"/><input id="btnSendMessage" class="submitButton button" type="button" value="Send"   />' +
+                       '</div><div id="'+uid+'smile_tray" class="smile_tray" style="display:none">'+
+                       '<img src="../Images/emoji/smile.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':smile:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/angry.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':angry:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/bandaid.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':bandaid:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/closeeyetounge.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':c_e_t:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/expressionless.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':expless:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/grin.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':grin:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/glass.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':glass:\',\'#'+uid+'smile_tray\');"/>'+
+                       '<br><img src="../Images/emoji/grinning-face_1f600.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':grinf:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/hearteye.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':hrteye:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/hugging-face_1f917.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':hugface:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/kis1.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':kis1:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/laugh.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':laugh:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/loudcry.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':loudcry:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/lovesmile.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':lovesmile:\',\'#'+uid+'smile_tray\');"/>'+
+                       '<br><img src="../Images/emoji/sick.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':sick:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/silent.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':silent:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/sleep.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':sleep:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/tearjoy.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':tearjoy:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/think.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':think:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/throwkiss.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':throwkiss:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/tounge.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':tounge:\',\'#'+uid+'smile_tray\');"/>'+
+                       '<br><img src="../Images/emoji/triumph.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':triumph:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/weary.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':weary:\',\'#'+uid+'smile_tray\');"/><img src="../Images/emoji/winking.png" class="smileybtn" onclick="simey(\'#'+uid+'_txtPrivateMessage\',\':winkingtounge:\',\'#'+uid+'smile_tray\');"/>'+
+
+
+                       
+                       '</div></div>' +
+                    '</div>';
+
+            var $div = $(div);
+
+        
+
+            // DELETE BUTTON IMAGE
+            $div.find('#imgDelete').click(function () {
+                $('#' + ctrId).remove();
+            });
+
+            //smilebutton
+            $div.find('#sml_btn').click(function(){
+                var x = document.getElementById(uid+"smile_tray");
+              
+                if( x.style.display==="none")
+                {
+                    $div.find("#"+uid+"smile_tray").fadeIn();
+                  
+                }
+                else
+                {
+                    $div.find("#"+uid+"smile_tray").fadeOut();
+                }
+            });
+         
+            // Send Button event
+            $div.find("#btnSendMessage").click(function () {
+                $userText=$div.find('#user');
+                messageread(uid);
+                var userid=$userText.val();
+                $textBox = $div.find("#"+uid+"_txtPrivateMessage");
+                var msg = $textBox.val();
+                if (msg.length > 0) {
+
+                    chattingHub.server.sendPrivateMessage(userId, msg,userid);
+                    $textBox.val('');
+                }
+            });
+
+            // Text Box event
+            $div.find("#"+uid+"_txtPrivateMessage").keypress(function (e) {
+                if (e.which == 13) {
+                    $div.find("#btnSendMessage").click();
+                }
+            });
+
+            AddDivToContainer($div);
+
+
+        }
+     
+
+        function createPrivateOfflineChatWindow(chattingHub, userId, ctrId, userName,uid) {
+            var tLeft= Math.floor(Math.random()*1000);
+            var div = '<div id="' + ctrId + '" userid="'+uid+'" class="ui-widget-content draggable" rel="0" style="bottom:0px; left: '+tLeft+'px; z-index: 11; position: fixed;">' +
+                       '<div class="header">' +
+                          '<div  style="float:right;">' +
+                              '<img id="imgDelete"  class="dlt" src="/Images/delete.png"/>' +
+                           '</div>' +
+
+                           '<span class="selText" rel="0">' + userName + '</span>' +
+                       '</div>' +
+                       '<div id="divMessage" class="messageArea">' +
+
+                       '</div>' +
+                       '<div class="buttonBar">' +
+                          '<div><input id="'+ctrId+'_txtPrivateMessage" class="msgText" type="text"   /><input id="user" type="hidden" value="'+uid+'"/>' +
+                          '<img src="../Images/smile_icon.png" id="sml_btn" class="smileybtn"/><input id="btnSendMessage" class="submitButton button" type="button" value="Send"   />' +
+                       '</div><div id="'+ctrId+'smile_tray" class="smile_tray" style="display:none">'+
+                       '<img src="../Images/emoji/smile.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':happy:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/angry.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':angry:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/bandaid.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':bandaid:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/closeeyetounge.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':c_e_t:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/expressionless.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':expless:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/grin.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':grin:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/glass.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':glass:\','+ctrId+'smile_tray);"/>'+
+                       '<br><img src="../Images/emoji/grinning-face_1f600.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':grinf:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/hearteye.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':hrteye:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/hugging-face_1f917.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':hugface:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/kis1.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':kis1:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/laugh.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':laugh:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/loudcry.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':loudcry:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/lovesmile.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':lovesmile:\','+ctrId+'smile_tray);"/>'+
+                       '<br><img src="../Images/emoji/sick.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':sick:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/silent.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':silent:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/sleep.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':sleep:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/tearjoy.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':tearjoy:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/think.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':think:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/throwkiss.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':throwkiss:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/tounge.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':tounge:\','+ctrId+'smile_tray);"/>'+
+                       '<br><img src="../Images/emoji/triumph.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':triumph:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/weary.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':weary:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/winking.png" class="smileybtn" onclick="simey('+ctrId+'_txtPrivateMessage,\':winkingtounge:\','+ctrId+'smile_tray);"/>'+
+
+
+                       
+                       '</div></div>' +
+                    '</div>';
+            var $div = $(div);
+            
+            var height = $div.find('#divMessage')[0].scrollHeight;
+            $div.find('#divMessage').scrollTop(height);
+
+            // DELETE BUTTON IMAGE
+            $div.find('#imgDelete').click(function () {
+                $('#' + ctrId).remove();
+            });
+         
+            //smilebutton
+            $div.find('#sml_btn').click(function(){
+                var x = document.getElementById(ctrId+"smile_tray");
+              
+                if( x.style.display==="none")
+                {
+                    $div.find("#"+ctrId+"smile_tray").fadeIn();
+                  
+                }
+                else
+                {
+                      $div.find("#"+ctrId+"smile_tray").fadeOut();
+                }
+            });
+         
+            // Send Button event
+            $div.find("#btnSendMessage").click(function () {
+                messageread(uid);
+                $userText=$div.find('#user');
+                var userid=$userText.val();
+                $textBox = $div.find("#"+ctrId+"_txtPrivateMessage");
+                var msg = $textBox.val();
+                if (msg.length > 0) {
+                    
+                    $.ajax({
+                        type:'POST',
+                        url:"/Chatting/OfflineChat",
+                        data:{fromId:@Session["userid"],toId:userid,name:'@Session["name"]',message:msg,cId:@Session["companyid"]},
+                        dataType:'json',
+                        success:function(result){
+                          
+                            var ctrId = 'private_' +result.id;
+                          $('#' + ctrId).find('#divMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + result.name + '</span>: ' + result.msg + '</div>');
+                        
+                          a.forEach(function (item) {
+                              $('#' + ctrId).find('#divMessage').each(function () {
+                                  var text = $(this).html();
+                                  $(this).html(text.replace(item[0], item[1]));
+                              });
+                          });
+
+                          var height = $div.find('#divMessage')[0].scrollHeight;
+                          $div.find('#divMessage').scrollTop(height);
+
+                        },
+                        error:function()
+                        {
+
+                        }
+                    })
+
+                    $textBox.val('');
+                }
+            });
+
+            
+            // Text Box event
+            $div.find("#"+ctrId+"_txtPrivateMessage").keypress(function (e) {
+                if (e.which == 13) {
+                    $div.find("#btnSendMessage").click();
+                }
+            });
+
+            AddDivToContainer($div);
+
+
+        }
+
+       
+        function AddDivToContainer($div) {
+            $('#divContainer').prepend($div);
+
+            $div.draggable({
+
+                handle: ".header",
+                stop: function () {
+
+                }
+            });
+        }
+
+        function showChat()
+        {
+            var x = document.getElementById("divChat");
+            if (x.style.display === "none") {
+                $("#divChat").fadeIn();
+            } else {
+                $("#divChat").fadeOut();
+            }
+        }
+        @*Group Chat*@
+        var chathub;
+        function grouphub(chattingHub){
+            chathub=chattingHub;
+        }
+            function expandgroup()
+            {
+                var grouphead=document.getElementById("grouphead");
+                var grouplist=document.getElementById("grouplist");
+                if(grouplist.style.display=="none")
+                {
+                    grouphead.innerHTML="";
+                    grouphead.style.bottom="1px"
+                    grouphead.innerHTML="_&nbsp;&nbsp;";
+                    listgroup();
+                    $("#grouplist").fadeIn();
+
+                }
+                else
+                {
+
+                    grouphead.innerHTML="";
+                    grouphead.innerHTML="+&nbsp;&nbsp;";
+                    $("#grouplist").fadeOut();
+                }
+
+            }
+
+            function fetchGroupMessage(gid)
+            {
+                var ctrId = 'private_' + gid;
+                $.ajax({
+                type:'POST',
+                url:"/Chatting/FetchGroupMessage",
+                data:{groupId:gid,cId:@Session["companyid"],userId:@Session["userid"]},
+                dataType:'json',
+                success:function(result){
+                    var msg=$.parseJSON(result);
+                    $('#divGroupMessage').empty();
+
+                    for(var i=0;i<msg.length;i++)
+                    {
+                        $('#' + ctrId).find('#divGroupMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + msg[i].name + '</span>: ' + msg[i].Message + '</div>');
+                        a.forEach(function (item) {
+                            $('#' + ctrId).find('#divGroupMessage').each(function () {
+                                var text = $(this).html();
+                                $(this).html(text.replace(item[0], item[1]));
+                            });
+                        });
+                       
+                    }
+                 
+
+                    var height = $('#divGroupMessage')[0].scrollHeight;
+                    $('#divGroupMessage').scrollTop(height);
+
+                },
+                error:function()
+                {
+                    alert("Please check your Internet Connection");
+                }
+                })
+            }
+
+            function addgroup(gid,gname)
+            {
+                var groupcode=$('<a id="'+gid+'" class="grp" style="color:black;bottom:0px; cursor:pointer;">'+gname +'</a>');
+                $(groupcode).click(function(){
+
+                    OpenGroupChatWindow(chathub, gid, gname,@Session["userid"],gname);
+                });
+
+                $('#grouplist').append(groupcode);
+
+
+            }
+
+
+
+
+            function listgroup()
+            {
+
+                $.ajax({
+                    type:'POST',
+                    url:"/Chatting/FetchGroup",
+                    data:{uId:@Session["userid"]},
+                    dataType:'json',
+                    success:function(result){
+                        var list=$.parseJSON(result);
+                        $('#grouplist').empty();
+
+                        for(var i=0;i<list.length;i++)
+                        {
+
+                            addgroup(list[i].groupid,list[i].groupname);
+                        }
+
+                    },
+                    error:function()
+                    {
+                        alert("Please check your Internet Connection");
+                    }
+                })
+            }
+
+        function OpenGroupChatWindow(chathub, gid, userName,uid,groupName) {
+
+            var ctrId = 'private_' + gid;
+
+            if ($('#' + ctrId).length > 0) return;
+
+            createGroupChatWindow(chathub, gid, ctrId, userName,groupName);
+
+            $.ajax({
+                type:'POST',
+                url:"/Chatting/FetchGroupMessage",
+                data:{groupId:gid,cId:@Session["companyid"],userId:@Session["userid"]},
+                dataType:'json',
+                success:function(result){
+                    var msg=$.parseJSON(result);
+                    $('#divGroupMessage').empty();
+
+                    for(var i=0;i<msg.length;i++)
+                    {
+                        $('#' + ctrId).find('#divGroupMessage').append('<div class="message"><span class="userName" style="color:#3d91e5">' + msg[i].name + '</span>: ' + msg[i].Message + '</div>');
+
+                        a.forEach(function (item) {
+                            $('#' + ctrId).find('#divGroupMessage').each(function () {
+                                var text = $(this).html();
+                                $(this).html(text.replace(item[0], item[1]));
+                            });
+                        });
+
+                       
+                    }
+
+                    var height = $('#divGroupMessage')[0].scrollHeight;
+                    $('#divGroupMessage').scrollTop(height);
+
+                },
+                error:function()
+                {
+                    alert("Please check your Internet Connection");
+                }
+            })
+        }
+
+        function createGroupChatWindow(chathub, gId, ctrId, userName,groupName) {
+            var tLeft= Math.floor(Math.random()*1000);
+            var div = '<div id="' + ctrId + '" class="ui-widget-content draggable" rel="0" style="bottom:0px; left: '+tLeft+'px; z-index: 11; position: fixed;">' +
+                       '<div class="header">' +
+                          '<div  style="float:right;">' +
+                              '<div id="min" style="float:left; color:white;cursor:pointer;">&nbsp;&nbsp;</div><img id="imgGroupDelete"  class="dlt" src="/Images/delete.png"/>' +
+                           '</div>' +
+
+                           '<span class="selText" rel="0">' +groupName+ '</span>' +
+                       '</div>' +
+                       '<div id="minimize'+ctrId+'"><div id="divGroupMessage" class="messageArea">' +
+
+                       '</div>' +
+                       '<div class="buttonBar">' +
+                          '<div><input id="'+ctrId+'_txtGroupMessage" class="msgText" type="text"   /><input id="GroupName" value="'+ groupName+'" type="hidden" />' +
+                          '<img src="../Images/smile_icon.png" id="sml_btn" class="smileybtn"/><input id="btnGroupMessage" class="submitButton button" type="button" value="Send"   />' +
+                       '</div><div id="'+ctrId+'smile_tray" class="smile_tray" style="display:none">'+
+                       '<img src="../Images/emoji/smile.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':happy:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/angry.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':angry:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/bandaid.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':bandaid:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/closeeyetounge.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':c_e_t:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/expressionless.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':expless:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/grin.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':grin:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/glass.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':glass:\','+ctrId+'smile_tray);"/>'+
+                       '<br><img src="../Images/emoji/grinning-face_1f600.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':grinf:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/hearteye.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':hrteye:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/hugging-face_1f917.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':hugface:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/kis1.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':kis1:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/laugh.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':laugh:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/loudcry.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':loudcry:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/lovesmile.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':lovesmile:\','+ctrId+'smile_tray);"/>'+
+                       '<br><img src="../Images/emoji/sick.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':sick:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/silent.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':silent:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/sleep.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':sleep:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/tearjoy.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':tearjoy:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/think.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':think:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/throwkiss.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':throwkiss:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/tounge.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':tounge:\','+ctrId+'smile_tray);"/>'+
+                       '<br><img src="../Images/emoji/triumph.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':triumph:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/weary.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':weary:\','+ctrId+'smile_tray);"/><img src="../Images/emoji/winking.png" class="smileybtn" onclick="simey('+ctrId+'_txtGroupMessage,\':winkingtounge:\','+ctrId+'smile_tray);"/>'+
+
+
+                       
+                       '</div></div>' +
+                    '</div>';
+            fetchGroupMessage(gId);
+            var $div = $(div);
+
+            // DELETE BUTTON IMAGE
+            $div.find('#imgGroupDelete').click(function () {
+                $('#' + ctrId).remove();
+            });
+
+
+            //smilebutton
+            $div.find('#sml_btn').click(function(){
+                var x = document.getElementById(ctrId+"smile_tray");
+              
+                if( x.style.display==="none")
+                {
+                    $div.find("#"+ctrId+"smile_tray").fadeIn();
+                  
+                }
+                else
+                {
+                    $div.find("#"+ctrId+"smile_tray").fadeOut();
+                }
+            });
+
+            // Send Button event
+            $div.find("#btnGroupMessage").click(function () {
+
+                $textBox = $div.find("#"+ctrId+'_txtGroupMessage');
+                var msg = $textBox.val();
+
+                $grpnme=$div.find("#GroupName");
+
+                var gname=$grpnme.val();
+                if (msg.length > 0) {
+
+                    chathub.server.sendGroupMessage('@Session["userid"]','@Session["name"]',gId, msg,'@Session["companyid"]',gname);
+
+                    $textBox.val('');
+                    fetchGroupMessage(gId);
+
+                }
+            });
+
+            // Text Box event
+            $div.find('#'+ctrId+'_txtGroupMessage').keypress(function (e) {
+                if (e.which == 13) {
+                    $div.find("#btnGroupMessage").click();
+                }
+            });
+
+            AddDivToContainer($div);
+
+        }
+
+        function AddDivToContainer($div) {
+            $('#divContainer').prepend($div);
+
+            $div.draggable({
+                axis:'x',
+                handle: ".header",
+                stop: function () {
+
+                }
+            });
+        }
+
+
+
+
+        </script>@*Group Chat end*@
+
+
+    @*chat assets end*@
+    @*Notification*@
+
+
+
+
+    <script type="text/javascript">
+
+
+        function notificationread(id,notId)
+        {
+           
+            $.ajax({
+                type: "POST",
+                url: '/Notification/PostData',
+                data:{id:id,notId:notId},
+   
+                success: function (response) {
+                    if (response.id == 1) {
+                        window.location.href = '@Url.Action("Post", "Notification")';
+                    }
+                    else if (response.id == 404) {
+                        window.location.href = "/CompanyRegister/Error_View";
+                    }
+
+                  
+                    
+          
+                }
+
+            }); }
+     $(function () {
+         var notifications;
+         var vCheck = localStorage.getItem('vCheck'+@Session["userid"]);
+         if (vCheck !== null)
+         {
+             $("#noti").css("color", "red");
+         }
+       
+            $('span.noti').click(function (e) {
+                e.stopPropagation();
+                $('.noti-content').show();
+                var count = 0;
+                updateNotification();
+                $("#noti").css("color", "white");
+                $('span.count', this).html('');
+            })
+       
+            $('html').click(function () {
+                $('.noti-content').hide();
+                $('span.count', this).html('');
+            })
+            $('.noti-content').click(function () {
+
+               $('.noti-content').hide();
+               $('span.count', this).html('');
+
+            })
+          
+            function updateNotification() {
+              
+                $('#notiContent').empty();
+                $('#notiContent').append($('<li>Loading...</li>'));
+
+
+                $.ajax({
+                    url: '/Notification/GetNotification',
+
+                    success: function (response) {
+                        localStorage.removeItem('vCheck'+@Session["userid"]);
+                        $('#notiContent').empty();
+                        if (response.length == 0) {
+                            $('#notiContent').append($('<li>No Notifications...</li>'));
+                        }
+                        $.each(response, function (index, value) {
+
+
+                            $('#notiContent').append($('<li id='+value.postId +'  onclick= "notificationread('+value.postId +','+value.notificationId+');">  ' + value.viewedBy + ' ' + value.notificationType + '</li> '));
+
+                        });
+
+
+                    },
+                    error: function (error) {
+                        console.log(error);
+
+                    }
+
+
+                });
+            }
+        
+            function updateNotificationCount() {
+                $.ajax({
+                    url: '/Notification/CheckNotification',
+                    success: function (response) {
+                        $('#notiContent').empty();
+                        if (response.length == 0) {
+                            $("#noti").css("color", "white");
+                        }
+                        else {
+                            $("#noti").css("color", "red");
+                            var vCheck = "0";
+                            localStorage.setItem('vCheck'+@Session["userid"], vCheck);
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+
+                    }
+                });
+            }
+         
+            notifications = $.connection.messagesHub;
+            $.connection.hub.start().done(function () {
+                console.log('Notification hub started');
+                updateNotificationCall();
+          
+
+
+            });
+    
+            function updateNotificationCall() {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Notification/NotificationCall',
+                    success: function (response) {
+                    },
+                    error: function (error) {
+                        console.log(error);
+
+                    }
+                });
+
+            }
+            //signalr method for push server message to client
+
+            notifications.client.notify =function(NotificationMsg) {
+
+                if (NotificationMsg == "NewMsg") 
+                {
+
+                    updateNotificationCount();
+                }
+
+            }
+
+        });
+
+    </script>
+
+</head>
+
+<body id="chatbody">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" style="position:fixed;">
+        <a class="navbar-brand" href="@Url.Action("CreatePost", "CreatePost")">NuNetwork</a>
+      
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse " id="navbarColor01" >
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item active">
+                
+                <span id="noti"class="noti glyphicon glyphicon-globe" style="color:white;float:right;z-index:10;top: 25px;"><span class="count"> </span></span>
+                <div class="noti-content">
+                    <ul id="notiContent"></ul>
+                </div>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"></button>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav"></ul>
+
+
+                </div>
+                
+                </li> 
+           
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="@Url.Action("SessionClear", "UserLogin")">Logout <span class="sr-only">(current)</span></a>
+                </li> 
+            
+            </ul>
+           
+
+            <br/>
+            <br />
+        <div style="top:20px;bottom:0px">
+            <input type="text" id="searchName"placeholder="Search" style="width:250px; margin-bottom: 9px;bottom:0px;color:black;" />
+        </div>
+        </div>
+        
+    </nav>
+
+@*Chat start*@
+    <div id="divContainer" class="divContainer">
+        <div id="divLogin" class="login">
+
+            <div id="divButton" style="visibility:hidden">
+                <input id="btnStartChat" type="button" class="submitButton" value="Start Chat" />
+            </div>
+        </div>
+
+        <div id="divChat" class="chatRoom" >
+            <div class="title">
+             Chat List  <span id='spanUser'></span>
+
+            </div>
+            <div class="content" style="overflow:auto;">
+
+                <div id="divusers" class="users">
+                </div>
+              
+                
+               
+
+        </div>
+            <div id="group" class="group">
+                <div class="groupTitle" >Groups<span id="grouphead" style="float:right; right:4px; cursor:pointer;" onclick="expandgroup()">+ &nbsp;&nbsp;</span></div>
+                
+                <div id="grouplist" style="display:none;height:150px;overflow:auto;">
+                    <div class="user" style="color:black;bottom:0px; cursor:pointer;">-- No Groups --</div>
+
+                </div>
+            </div>
+        <input id="hdId" type="hidden" />
+        <input id="hdUserName" type="hidden" />
+    </div>
+@*Chat end*@
+
+
+<div id="body-container" style="">
+    @RenderBody()
+
+    @RenderSection("scripts", required: false)
+    </div>
+    <link href="~/Css/icon.css" rel="stylesheet" />
+    <a onclick="showChat()" style="color:white" class="cBtn"><br><i class="material-icons" style="font-size:25px; top:45px;">chat</i></a>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <link href="~/Css/Userregistermin.css" rel="stylesheet" />
+    <link href="~/Css/Userregister.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery_1.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/jquery-1.9.1.js"></script>
+    <link href="~/Css/Userregistermin.css" rel="stylesheet" />
+    <link href="~/Css/Userregister.css" rel="stylesheet" />
+    <link href="~/Css/Userregister.css" rel="stylesheet" />
+    <link href="~/Css/jquery-ui.min.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">*@
+    <link href="~/Css/Inline.css" rel="stylesheet" />
+    <link href="~/Css/font-awesome.min.css" rel="stylesheet" />
+</head>
+<script>
+    function menuitem()
+    {
+        if(@Session["companyid"]!=null && @Session["userid"]!=null)
+        {
+            var element = document.getElementById('logbutton');
+            element.innerHTML += '<li class="nav-item active" style="float:right;" > <a class="nav-link mr-sm-2" href="@Url.Action("SessionClear", "UserLogin")">Logout <span class="sr-only">(current)</span></a></li>';
+        }
+
+      
+
+     
+    }
+</script>
+
+
+<body onload="menuitem()">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+       @if (@Session["userid"] == null)
+       {
+        <a class="navbar-brand" style="cursor:pointer; color:white;" id="homeLink" onclick="location.href='@Url.Action("CreatePost", "CreatePost")'">NuNetwork</a>
+       }
+       else
+       {
+        <a class="navbar-brand" style="cursor:pointer; color:white;" id="homeLink" onclick="location.href='@Url.Action("CreatePost", "CreatePost")'">NuNetwork</a>
+       }
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" style="">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarColor01">
+
+                <ul class="navbar-nav mr-auto" id="logbutton">
+
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            @*<a class="nav-link" href="@Url.Action("LoginUser", "UserLogin")">Home <span class="sr-only">(current)</span></a>*@
+                        </li>
+
+
+                    </ul>
+
+            </div>
+</nav>
+     @RenderBody()
+
+    @RenderSection("scripts", required: false)
+
+ 
+
+</body>
+</html>

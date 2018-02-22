@@ -1,0 +1,118 @@
+﻿@model NuNetwork.Models.Register
+@{
+    ViewBag.Title = "EditEmployee";
+    Layout = "~/Views/Shared/HomeNavBar.cshtml";
+}
+<head>
+</head>
+<script type="text/javascript">
+    $(document).ready(function () {
+        validationLength = 15;
+        addressValidationLength = 150;
+        $('#firstName,#secondName').on('keyup keydown change', function () {
+            if ($(this).val().length > validationLength) {
+                val = $(this).val().substr(0, $(this).val().length - 1);
+                $(this).val(val);
+            };
+        });
+        $('#address').on('keyup keydown change', function () {
+            if ($(this).val().length > addressValidationLength) {
+                val = $(this).val().substr(0, $(this).val().length - 1);
+                $(this).val(val);
+            };
+        });
+    });
+
+</script>
+
+<body>
+    @using (Html.BeginForm("EditEmployee","CompanyRegister", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+        <div class="jumbotron">
+            <div class="editemployee">
+                <fieldset>
+                    <h4>
+                Edit Profile
+                    </h4>
+                    <div class="form-group" style="width:400px">
+                        @Html.LabelFor(m => m.firstName, "First Name", new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.firstName, new { @class = "form-control" })
+
+                            @Html.ValidationMessageFor(m => m.firstName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group" style="width:400px">
+                        @Html.LabelFor(m => m.secondName, "Second Name", new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.secondName, new { @class = "form-control" })
+
+                            @Html.ValidationMessageFor(m => m.secondName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group" style="width:400px">
+                        @Html.LabelFor(m => m.email, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10" id="mydiv">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                                </div>
+                                @Html.TextBoxFor(m => m.email, new { @class = "form-control" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" style="width:400px">
+                        @Html.LabelFor(m => m.mobile, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-mobile" aria-hidden="true"></i>
+                                </div>
+                                @Html.TextBoxFor(m => m.mobile, new { @class = "form-control" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.mobile, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group" style="width:400px;">
+                        @Html.LabelFor(m => m.address, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+
+                            @Html.TextAreaFor(m => m.address, new { @class = "form-control", row = 3 })
+                            @Html.ValidationMessageFor(m => m.address, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                    <div class="form-group" style="color:#337AFF;">
+                        <div class="col-md-offset-2 col-md-10"  style="color:#337AFF;">
+                            <input type="submit"   class="btn btn-success "  value="update" onclick="ValidateControl();" />
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    }
+  
+</body>
+
+@if (ViewBag.Message != null)
+            {
+    <script type="text/javascript">
+                    window.onload = function () {
+                        bootbox.alert({
+                            size: "medium",
+                            message: "<b>successfully registered </b>",
+                            callback: function () { window.location.href = '@Url.Action("ViewEmploye", "CompanyRegister")'; }
+                        })
+                    };
+
+    </script>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+}
+

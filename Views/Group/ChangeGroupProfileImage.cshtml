@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewBag.Title = "ChangeGroupProfileImage";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+
+<html>
+<head>
+
+    <title></title>
+    <script>
+
+        function showImageUpload() {
+            var x = document.getElementById("imgcontrols");
+            if (x.style.display === "none") {
+                $("#imgcontrols").fadeIn();
+                $("#inputfile").click();
+            } else {
+                $("#imgcontrols").fadeOut();
+            }
+        }
+
+
+    </script>
+    <script>
+
+        $(document).ready(function () {
+
+
+            $("#submit").click(function () {
+
+                var formData = new FormData();
+
+
+                var file = $("#inputfile").get(0).files;
+
+
+
+                    if (file.length > 0)
+                    {
+
+                        formData.append("inputfile", file[0]);
+
+
+                    }
+
+
+                    if ($('#inputfile').get(0).files.length === 0) {
+                        alert('Please Select an Image');
+                    }
+
+
+                        else{
+                        $.ajax({
+                            type: "POST",
+                            url: "/Group/ChangeProfilePicture",
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                if (response.id == 1)
+                                {
+                                    location.href = "/CreateEvent/GroupDetails";
+                                }
+                            },
+                            failure: function (response) {
+                                bootbox.alert("Process failed!! Please try again.");
+                            },
+                            error: function (response) {
+                                bootbox.alert("Error!! Sorry for your inconvinience.");
+                            }
+                        });
+                    }
+
+                });
+        });
+
+
+
+        @*imgscripty*@
+     $(document).ready(function() {
+         var uploader = document.getElementById("inputfile"),
+        image = document.getElementById("img-result");
+        uploader.type = "file";
+        uploader.accept = "image/*";
+        uploader.onchange = function() {
+         var reader = new FileReader();
+    reader.onload = function(evt) {
+      image.classList.remove("no-image");
+      image.style.backgroundImage = "url(" + evt.target.result + ")";
+      var request = {
+        itemtype: "test 1",
+        brand: "test 2",
+        images: [
+          {
+            data: evt.target.result
+          }
+        ]
+      };
+
+      document.querySelector(".show-button").style.display = "block";
+      document.querySelector(
+        ".upload-result__content"
+      ).innerHTML = JSON.stringify(request, null, "  ");
+    };
+    reader.readAsDataURL(uploader.files[0]);
+  };
+
+  document.querySelector(".hide-button").onclick = function() {
+    document.querySelector(".upload-result").style.display = "none";
+  };
+
+  document.querySelector(".show-button").onclick = function() {
+    document.querySelector(".upload-result").style.display = "block";
+  };
+})();
+
+    </script>
+
+    <link href="~/Css/image upload.css" rel="stylesheet" />
+
+</head>
+<body>
+
+
+    <div class="wrapper">
+        <button class="no-image" onclick="showImageUpload()" id="img-result">Upload Image</button>
+        <div id="imgcontrols" style="display:none;align-content:center;" class="ctrls">
+            <input type="file" style="display:none;" id="inputfile" accept="image/jpeg, image/png" />
+            <button type="button" class="btn btn-default" id="submit">Upload Image</button>
+        </div>
+    </div>
+
+
+
+
+</body>
+</html>
+

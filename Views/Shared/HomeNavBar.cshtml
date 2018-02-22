@@ -1,0 +1,63 @@
+﻿﻿<!DOCTYPE html>
+<html>
+<head>
+  
+    <title>@Session["name"]-NuNetwork-</title>
+	<meta charset="utf-8" />
+    <!-- Compiled and minified CSS -->
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootbox.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/Profile.js"></script>
+    @Scripts.Render("~/bundles/jquery")
+    <!-- Compiled and minified JavaScript -->
+    <link href="~/Css/StyleSheetmaterial2.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery_1.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/jquery-1.9.1.js"></script>
+    <link href="~/Css/Userregistermin.css" rel="stylesheet" />
+    <link href="~/Css/Userregister.css" rel="stylesheet" />
+    <link href="~/Css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Css/icon.css" rel="stylesheet" />
+
+    <link href="~/Css/Inline.css" rel="stylesheet" />
+    <script>
+        function displyname() {
+            if ('@Session["name"]' != null) {
+                document.getElementById('uname').innerHTML += '@Session["name"]';
+            }
+        }
+
+        </script>
+</head>
+<body onload="displyname()">
+
+    <nav style="position:fixed;top:0;float:initial;z-index:10;">
+        <div class="nav-wrapper #1565c0 blue darken- ">
+            <a  class="brand-logo" onclick="location.href='@Url.Action("CreatePost","CreatePost")'">  &nbsp NuNetwork</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+
+                <li><a onclick="location.href='@Url.Action("CreatePost","CreatePost")'"><i class="material-icons left">web</i>News Feeds</a></li>
+                <li><a onclick="location.href='@Url.Action("UserRegister","UserRegister")'"><i class="material-icons left">person_add</i>User Registration</a></li>
+                <li><a onclick="location.href='@Url.Action("ViewEmploye","CompanyRegister")'"><i class="material-icons left">recent_actors</i>View Employe</a></li>
+
+                 <li> <a id="uname" class="dropdown-button  #1565c0 blue darken" data-activates='dropdown1'><i class="material-icons left">person</i></a></li>
+                  <ul id='dropdown1' class='dropdown-content'>
+                     
+                <li><a onclick="location.href='@Url.Action("SessionClear","UserLogin")'"><i class="material-icons left">settings_power</i> LogOut</a></li>
+
+                </ul>
+         </ul>
+        </div>
+    </nav>
+    @RenderSection("scripts", required: false)
+    <div>@RenderBody()</div>
+
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script src="~/Scripts/JavaScript.js"></script>
+   
+    
+
+</body>
+</html>
+

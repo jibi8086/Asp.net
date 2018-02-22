@@ -1,0 +1,88 @@
+﻿@model NuNetwork.Models.group
+
+@{
+    ViewBag.Title = "AddGroupMember";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var procedureName = "USPGroupAddMemberSearch"
+                $.ajax({
+                    url: '/Group/SearchWithNameGroupMember/',
+                    dataType: 'json',
+                    data: { procedureName: procedureName },
+                    success: function (data) {
+                        var tagObjects = JSON.parse(data);
+                        $("#tag").tokenInput(tagObjects,{
+                            crossDomain: false,
+                            preventDuplicates: true
+                        });
+                    }
+                });
+
+        });
+</script>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+            $("input[type=button]").click(function () {
+                var tagIds = $('#tag').val();
+                tagIds = tagIds + ',';
+
+                if (tagIds == '') {
+                    bootbox.alert("Process failed!! Please try again.");
+                }
+
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Group/AddMember",
+                        data: { userTockenId: tagIds},
+                        success: function (response) {
+                            if (response.id == 1) {
+                                    window.location.href = '@Url.Action("GroupDetails", "CreateEvent")';
+                            }
+                            else {
+                                alert("failed");
+                            }
+
+                        },
+
+                        failure: function (response) {
+
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+        });
+        });
+
+</script>
+
+<html>
+<body background="~/Images/LoginBackground.jpg" style="background-repeat:no-repeat; background-size:auto">
+
+    <div class="jumbotron addmemberStyle">
+        <h2 class="addGrouMemberpStyle">Add Group Member.</h2>
+        <hr />
+
+        <div class="form-group addGrpSearch" style="font-size:16px;color:#1e5dca;">
+            &nbsp&nbsp&nbspSearch Name
+            <div class="col-md-10"style="color:black;">
+                <input type="text" ng-model="test" id="tag" placeholder="Enter Group Member" class="form-control addmembertxt">
+            </br>
+            </div>
+            <div class="addBtnStyle">
+                <input type="button" id="post" class="btn btn-primary" value="Add" onclick="ValidateControl();" />
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

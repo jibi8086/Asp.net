@@ -1,0 +1,421 @@
+﻿@{
+    ViewBag.Title = "ProfilePost";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+<head>
+    <script type="text/javascript">
+    $(document).ready(function ()
+    {
+      $("#ShowImage").fancybox({
+          helpers:
+          {
+              title:
+              {
+                type: 'float'
+             }
+          }
+        });
+    });
+    </script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('.imageGallery').fancybox({
+            fitToView: false,
+            width: '600px',
+            height: '400px',
+            autoSize: false,
+            closeClick: false,
+            openEffect: 'none',
+            closeEffect: 'none',
+            padding: 0,
+            closeBtn: false,
+            'afterClose': function () {
+                window.location.reload();
+            },
+        });
+    });
+    </script>
+    <script>
+     $(document).ready(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/UserRegister/ProfileDetails",
+                        success: function (response) {
+                          
+                            var showresult = $.parseJSON(response);
+                            var image = '';
+                            for (var i = 0; i < showresult.length; i++) {
+                                var name = showresult[i].Name;
+                                var dateofbirth = showresult[i].DateofBirth;
+                                var nationality = showresult[i].Nationality;
+                                var mobile = showresult[i].Mobile;
+                                var email = showresult[i].Email;
+                                var gender = showresult[i].Gender; 
+                                image += '<img src="' + showresult[i].ImageUrl +'"style="height:150px;width:150px"/>';
+                                document.getElementById("profileimage").innerHTML = image;
+                                $('#name').text(name);
+                                $('#dateofbirth').text(dateofbirth);
+                                $('#nationality').text(nationality);
+                                $('#mobile').text(mobile);
+                                $('#email').text(email);
+                                $('#gender').text(gender);
+                            }
+                        
+                        },
+                        failure: function (response) {
+                            bootbox.alert("Process failed!! Please try again.");
+                        },
+                        error: function (response) {
+                            bootbox.alert("Error!! Sorry for your inconvinience.");
+                        }
+                    });
+            });
+    </script>
+    <script>
+        function ShowComments(id) {
+            $(document).ready(function () {
+                var postid = id;
+                var div = document.getElementById(id);
+                if (div.style.display == "none") {
+                    div.style.display = "block";
+                }
+                else {
+
+                    div.style.display = "none";
+                }
+                  $.ajax({
+                   type: "POST",
+                   url: "/UserRegister/ShowProfileComment",
+                   data: { Postid: postid },
+                   success: function (response) {
+                       var result = $.parseJSON(response);
+                    
+                       $(div).html('');
+                       if (result.length > 0) {
+                           div.innerHTML += '</br>'
+                           for (i = 0; i < result.length; i++) {
+                               div.innerHTML += '<span></hr></span><span style="font-weight:bold;float:left;margin-left:50px;color: #1967be;" class="fa fa-user" >&nbsp;&nbsp;' + result[i].commnentdBy + '</span>&nbsp;&nbsp;<span style="float:right;margin-right:150px;font-weight:bold;color: #1967be; "class="fa fa-calendar">&nbsp;' + result[i].CommentedDate + '</span><span></span></br></br>';
+                               div.innerHTML += '<span style="font-size:16px;float:left;margin-left:50px" >&nbsp;&nbsp;' + result[i].Comment + '</span>';
+                               div.innerHTML += '</br>';
+                               div.innerHTML += '<span style="float:right;margin-right:30px" <button  style="outline-width:initial; height:25px;" onclick="DeleteComment(' + result[i].CommentId + ')"><i class="material-icons" style="font-size:14px; cursor:pointer;">delete</i></button></span></br>';
+                               div.innerHTML += '</br>';
+                               div.innerHTML += '<span style="float:right;margin-right:300px;font-weight:bold;font-size:15px;"><label  onclick="ShowReply(' + result[i].CommentId + '  )" >View Replies</label><br></span></br></br>';
+                               div.innerHTML += '</br>';
+                               div.innerHTML += '<div id="div' + result[i].CommentId + '"></div></div>';  
+                           }
+                       }
+                   },
+                   failure: function (response) {
+                       bootbox.alert("Process failed!! Please try again.");
+                   },
+                   error: function (response) {
+                       bootbox.alert("Error!! Sorry for your inconvinience.");
+                   }
+               });
+            })
+        }
+
+    </script>
+    <script>
+        function ShowReply(CommentId) {
+            $(document).ready(function () {
+                var commentid = CommentId;
+                var div = document.getElementById("div" + CommentId);
+                if (div.style.display == "none") {
+                    div.style.display = "block";
+                }
+                else {
+
+                    div.style.display = "none";
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/UserRegister/ShowProfileReplay",
+                    data: { commentid: commentid },
+                    success: function (response) {
+                        var result = $.parseJSON(response);
+                        $(div).html('');
+                        if (result.length > 0) {
+                            div.innerHTML += '</br>'
+                            for (i = 0; i < result.length; i++) {
+                                div.innerHTML += '<span style="font-weight:bold;margin-left:100px;color: #1967be;" class="fa fa-user" >&nbsp;&nbsp;' + result[i].RepaliedBy + '</span>&nbsp;&nbsp;<span style="float:right;margin-right:30px;font-weight:bold;color: #1967be; "class="fa fa-calendar">&nbsp;' + result[i].RepaliedDate + '</span></br></br>';
+                                div.innerHTML += '<span style="font-size:16px;margin-left:100px;" >&nbsp;&nbsp;' + result[i].Replay + '</span></br></br></br></br>';
+                                div.innerHTML += '</hr>';
+                            }
+                        }
+
+                    },
+                    failure: function (response) {
+                        bootbox.alert("Process failed!! Please try again.");
+                    },
+                    error: function (response) {
+                        bootbox.alert("Error!! Sorry for your inconvinience.");
+                    }
+                });
+            });
+            }
+    </script>
+  
+    <script>
+        function DeleteComment(CommentId) {
+            $.ajax({
+                type: "POST",
+                url: "/UserRegister/DeleteUserComment",
+                data: { CommentId: CommentId },
+                success: function (response) {
+
+                    if (!response.error) location.reload(true);
+                    
+                },
+                failure: function (response) {
+                   bootbox.alert("Process failed!! Please try again.");
+                },
+                error: function (response) {
+                   bootbox.alert("Error!! Sorry for your inconvinience.");
+
+                }
+            });
+        };
+    </script>
+      <script>
+        function eventView(EventId) {
+            $.ajax({
+                type: "POST",
+                url: "/CreateEvent/Eventdata",
+                data: { EventId: EventId },
+                success: function (response) {
+                },
+                failure: function (response) {
+                   bootbox.alert("Process failed!! Please try again.");
+                },
+                error: function (response) {
+                   bootbox.alert("Error!! Sorry for your inconvinience.");
+
+                }
+            });
+        };
+    </script>
+    <script>
+        function DeleteFunc(id) {
+            $(document).ready(function () {
+                var postid = id;
+                $.ajax({
+                    type: "POST",
+                    url: "/CreatePost/DeletePost",
+                    data: { PostId: postid },
+                    success: function (response) {
+                        if (response.id == 1) {
+                            location.reload();
+                        }
+                        else if (response.id == 404) {
+                            window.location.href = "/CompanyRegister/Error_View";
+                        }
+
+                    },
+                    failure: function (response) {
+                        bootbox.alert("Process failed!! Please try again.");
+                    },
+                    error: function (response) {
+                        bootbox.alert("Error!! Sorry for your inconvinience.");
+                    }
+
+                });
+            })
+        }
+
+    </script>
+    <script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/UserRegister/userProfilePost",
+            success: function (response)
+            {
+                var profileresult = $.parseJSON(response.profileList);
+                var profileImageList = $.parseJSON(response.profileImages);
+                var htmlGroupPost="";
+                if (profileresult.length != 0)
+                {
+                    htmlGroupPost += '<div background-color:whitesmoke;>';
+                    for (var j = 0; j < profileresult.length; j++) {
+                       
+                        htmlGroupPost += '<table ><tr><td><div><div><span style=" font-weight:bold;color: #1967be;float:left;padding-left: 40px;" class="fa fa-calendar">&nbsp;' + profileresult[j].CommentedDate + '&nbsp;</span></div></div></div></td><td><div  ><div><span style=" font-weight:bold;color: #1967be;" class="fa fa-clock-o">&nbsp;&nbsp;' + profileresult[j].CreatedTime + '</span></div></div></div></td></tr></table>';
+                        if (profileresult[j].PostMessage != "") {
+                            htmlGroupPost += '<div class="col-md-10" style="padding-left: 40px; padding-right: 40px;"><div style="text-align: justify;width:120%;"><span style="font-size:18px;font-weight:normal;">' + profileresult[j].PostMessage + '</span></div></div></div>';
+                           
+                        }
+                        htmlGroupPost += '</br>';
+                        var urlCnt = 0;
+                        for (var z = 0; z < profileImageList.length; z++) {
+                            if (profileImageList[z].PostUrl != "")
+                            {
+                                if (profileImageList[z].FK_PostId == profileresult[j].PostId)
+                                {
+                                    urlCnt++;
+                                }
+                            }
+                        }
+                        for (var z = 0; z < profileImageList.length; z++) {
+                            if (profileImageList[z].PostUrl != "")
+                            {
+                                if (profileImageList[z].FK_PostId == profileresult[j].PostId)
+                                {
+                                   
+                                    var fileExtension = profileImageList[z].PostUrl.split('.').pop();
+                                    if (fileExtension == 'mp4')
+                                    {
+                                        if (urlCnt == 1) {
+                                            htmlGroupPost += '<video controls style="width:80%;height:80%;padding-left: 40px; padding-right: 40px;" src="' + profileImageList[z].PostUrl + '" type="video/mp4" poster="' + profileImageList[z].PostUrl + '" />';
+                                        }
+                                        else if (urlCnt > 1)
+                                        {
+                                            htmlGroupPost += '<div class="row-fluid">';
+                                            htmlGroupPost += '<div class="span2">';
+                                            htmlGroupPost += '<div class="item">';
+                                            htmlGroupPost += '<table"><tr><div style="margin:10px; float:left; height:150px; overflow:hidden; width:150px;">';
+                                            htmlGroupPost += '<a id="ShowViedo" class="fancybox-button" data-rel="fancybox-button"title="viedo" href="../Images/' + profileImageList[z].PostUrl + '" >';
+                                            htmlGroupPost += ' <div class="zoom">';
+                                            htmlGroupPost += '<video controls src="' + profileImageList[z].PostUrl + '" type="video/mp4" />';
+                                            htmlGroupPost += '<div class="zoom-icon"></div>';
+                                            htmlGroupPost += '</div>';
+                                            htmlGroupPost += '</a>';
+                                            htmlGroupPost += ' </div></tr></table></div></div></div>';
+                                        }
+                                    }
+                                    else if (fileExtension == 'jpg' || fileExtension == 'png' || fileExtension == 'jpeg') {
+
+                                        if (urlCnt == 1)
+                                        {
+                                            htmlGroupPost += '<img src="' + profileImageList[z].PostUrl + '" id="Image" style="height:80%;width: 80%;padding-left: 40px; padding-right: 40px;" alt=""  /><br><br><br>';
+                                        }
+                                        else if (urlCnt > 1)
+                                            //htmlGroupPost += '<img src="' + profileImageList[z].PostUrl + '" id="Image" style="height:100%;width: 100%;padding-left: 40px; padding-right: 40px;" alt=""  /><br><br><br>';
+                                        {
+                                            htmlGroupPost += '<div class="row-fluid">';
+                                            htmlGroupPost += '<div class="span2">';
+                                            htmlGroupPost += '<div class="item">';
+                                            htmlGroupPost += '<table"><tr><div style="margin:10px; float:left;padding-left: 20px; height:150px; overflow:hidden; width:200px;">';
+                                            htmlGroupPost += '<a id="ShowImage" class="fancybox-button" data-rel="fancybox-button"title="Photo" href="../Images/' + profileImageList[z].PostUrl + '" >';
+                                            htmlGroupPost += ' <div class="zoom">';
+                                            htmlGroupPost += '<img src="' + profileImageList[z].PostUrl + '" class="imgBox" />';
+                                            htmlGroupPost += '<div class="zoom-icon"></div>';
+                                            htmlGroupPost += '</div>';
+                                            htmlGroupPost += '</a>';
+                                            htmlGroupPost += ' </div></tr></table></div></div></div>';
+                                        }
+              }
+                                }
+                            }
+                        }
+                        htmlGroupPost += '</br>';
+                        htmlGroupPost += '<div class="col-md-10" ><div><span style="padding-left: 40px;">' + profileresult[j].LikeCount + '</span><span class="glyphicon glyphicon-thumbs-up"></span></div></div></div><br>&nbsp;';
+                        htmlGroupPost += '<br><div class="col-md-10" ><div><span style="font-weight:bold;font-size:17px;cursor:pointer;padding-left: 40px;">  <label onclick="ShowComments(' + profileresult[j].PostId + ')">ViewComments</label></span></div></div></div><br><br>';
+                            htmlGroupPost += '<div class="col-md-10" ><div><span> <div  id="' + profileresult[j].PostId + '"> </div> </span></div></div></div><br><br>';
+                            htmlGroupPost += '<br><div class="col-md-10" ><div><span style="font-weight:bold;font-size:17px;cursor:pointer;padding-left: 40px;">  <label onclick="DeleteFunc(' + profileresult[j].PostId + ')" style="cursor:pointer;font-weight:bold;">Delete Post</label></span></div></div></div>';
+                            htmlGroupPost += '</br>';
+                            htmlGroupPost += '</br>';
+                            htmlGroupPost += '</br>';
+
+                    }
+                   
+                    htmlGroupPost += '</div>';
+                }
+
+                $('#profileanswers').html(htmlGroupPost);
+            },
+            failure: function (response) {
+
+            },
+            error: function (response) {
+
+            }
+        });
+    });
+
+    </script>
+</head>
+<body class="profilepost">
+    <div class="container">
+        @using (Html.BeginForm(new { enctype = "multipart/form-data" }))
+            {
+            <div class="profile-card">
+            
+                <div class="profile-cover" style="width:980px">
+                    <div class="profile-avatar" id="profileimage">
+                    </div>
+                    <div class="profile-details" id="name"></div>
+                </div>
+                <div class="profile-content" style="width:980px">
+                    <div class="row">
+                        <div class="digits">
+                            <ul class="fa-ul">
+                                <li>
+                                    <i class="fa fa-calendar">
+                                        <div id="dateofbirth"> </div>
+                                    </i>
+                                </li>
+                                <li>
+                                    <i class="fa fa-flag-o" aria-hidden="true">
+                                        <div id="nationality"></div>
+                                    </i>
+                                </li>
+                                <li>
+                                    <i class="fa fa-mobile" aria-hidden="true">
+                                        <div id="mobile"> </div>
+                                    </i>
+                                </li>
+                                <li>
+                                    <i class="fa fa-envelope" aria-hidden="true">
+                                        <div id="email"> </div>
+                                    </i>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user" aria-hidden="true">
+                                        <div id="gender"></div>
+                                    </i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+             <hr />
+               
+                <div class="panel panel-default post" style="margin-top:30px;width: 980px;">
+                    <center>  <h4> <strong>Profile Posts</strong></h4></center>
+                    <div class="panel-body" id=""></div>
+
+                    <section>
+                        <div class="container">
+                            <div class="row">
+                              
+                                    
+                                </div>
+                                <div class="col-md-10" id="maindiv">
+                                    <div class="">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title"></h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <form style="padding:5px">
+                                                <div class="form-group" style="padding:2px"></div>
+                                              
+                                                <div class="pull-right">
+                                                   
+
+                                                </div>
+                                                
+                                            </form>
+                                        </div>
+                                        <div class="panel panel-default post">
+                                            <div class="panel-body" id="profileanswers">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </section>
+                    </div>
+            </div>
+        }
+    </div>
+</body>

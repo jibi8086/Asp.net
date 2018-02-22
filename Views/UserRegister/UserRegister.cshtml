@@ -1,0 +1,339 @@
+﻿@model NuNetwork.Models.Register
+
+@{  
+    //Layout = "~/Views/Shared/HomeNavBar.cshtml";
+    //Layout=null;
+    Layout = "~/Views/Shared/RegisterMaster.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>    
+    <style type="text/css">
+        .focus {
+            border: 2px solid red;
+            background-color: #FEFED5;           
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {            
+            $("#email").focusout(function () {
+
+            var email = $("#email").val();
+            var type = 1;
+
+            $.ajax({
+                type: "POST",
+                url: "/UserRegister/validateControls",
+                data: { mailidId: email,Type:type },
+                success: function (response) {
+                    if (response.id == 1) {                       
+                        $("#email").addClass("focus");                       
+                        $("#email").val("");
+                        $("#email").attr('placeholder', "Email Already exist");}
+                    else if(response.id==404)
+                    {
+                        window.location.href = "/CompanyRegister/Error_View";
+                    }
+                                  
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+            });
+            $("#username").focusout(function () {
+
+                var email = $("#username").val();
+                var type = 2;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/UserRegister/validateControls",
+                    data: { mailidId: email,Type:type },
+                    success: function (response) {
+                        if (response.id == 1) {                       
+                            $("#username").addClass("focus");                       
+                            $("#username").val("");
+                            $("#username").attr('placeholder', "username Already exist");                                              
+                        }                   
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+            function usertype()
+            {
+                if (@Session["otp"] != null) {
+                    $("#usertype").prop("disabled", "disabled");
+                    $("#usertype").val("1");
+                }
+
+            }
+            usertype();
+        });
+    </script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script>
+        $(function () {
+            $(".datepicker").datepicker({
+                dateFormat: "yy/mm/dd",
+                changeMonth: true,
+                changeYear: true,
+                minDate: new Date(1950, 0, 1),
+                maxDate: '-18Y',
+                showOn: "both",
+                buttonText : "<i class='fa fa-calendar'></i>"
+            }).attr('readonly', 'readonly');
+        });
+    </script>
+    <script type="text/javascript">
+        function ValidateControl() {
+        if ($("#firstName").val() == "") {
+            $("#firstName").addClass("form-control is-invalid");            
+        }
+        if ($("#secondName").val() == "") {
+            $("#secondName").addClass("form-control is-invalid");
+        }
+        if ($("#UserTypeID").val() == "") {
+            $("#UserTypeID").addClass("form-control is-invalid");
+        }
+        if ($("#DesignationId").val() == "") {
+            $("#DesignationId").addClass("form-control is-invalid");
+        }
+        if ($("#dateOfBirth").val() == "") {
+            $("#dateOfBirth").addClass("form-control is-invalid");
+        }
+        if ($("#nationality").val() == "") {
+            $("#nationality").addClass("form-control is-invalid");
+        }
+        if ($("#address").val() == "") {
+            $("#address").addClass("form-control is-invalid");
+        }
+        if ($("#mobile").val() == "") {
+            $("#mobile").addClass("form-control is-invalid");
+        }
+        if ($("#email").val() == "") {
+            $("#email").addClass("form-control is-invalid");
+        }
+        if ($("#username").val() == "") {
+            $("#username").addClass("form-control is-invalid");
+        }
+        if ($("#password").val() == "") {
+            $("#password").addClass("form-control is-invalid");
+        }
+        if ($("#UserPhoto").val() == "") {
+            $("#UserPhoto").addClass("form-control is-invalid");
+        }
+    }
+    </script>
+    <script type="text/javascript">
+            function fileCheck(obj) {
+                var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+                if ($.inArray($(obj).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                    alert("Please select an image file..");
+                    $("#image").val("");
+                    $("#image").addClass("focus");                                        
+                }
+            }
+    </script>
+<script>
+    $(document).ready(function () {
+        validationLength = 15;
+        $('#firstName,#secondName').on('keyup keydown change', function () {
+            if ($(this).val().length > validationLength) {
+                val = $(this).val().substr(0, $(this).val().length - 1);
+                $(this).val(val);
+            };
+        });
+    });
+</script>
+    <meta name="viewport" content="width=device-width" />
+    <title>UserRegister</title>
+</head>
+<body class="useregister">
+        @using (Html.BeginForm("UserRegister", "UserRegister", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" ,id="register"}))
+        {
+            <div class="jumbotron"style="width:700px;margin-left:300px;background-color:whitesmoke;margin-top:2px">
+                <div style="margin-left:50px">
+                    <h3 style="margin-left:110px; color:#2780e3">USER REGISTRATION</h3>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.firstName, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                </div>
+                                @Html.TextBoxFor(m => m.firstName, new { @class = "form-control" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.firstName, "", new { @class = "text-danger" })
+                        </div>
+                        </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.secondName, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                @Html.TextBoxFor(m => m.secondName, new { @class = "form-control" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.secondName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserTypeID, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(m => m.UserTypeID, Model.listuserType, "Please select", new { @class = "form-control",@id="usertype" })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DesignationId, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(m => m.DesignationId, Model.listDesignation, "Please select", new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <br />
+                    
+                    <div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.dateOfBirth, new { @class = "col-md-6 control-label" })
+                            <div class="col-md-10" >
+                                <div class="input-group">
+                                    @Html.EditorFor(m => m.dateOfBirth, new { htmlAttributes = new { @class = "datepicker", placeholder = "select date..." } })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.dateOfBirth, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.gender, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                                 @Html.RadioButtonFor(m => m.gender, "1",new { @checked="checked"})Male
+                               @Html.RadioButtonFor(m => m.gender, "2")Female
+                              @Html.RadioButtonFor(m => m.gender, "3")Others
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.nationality, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+
+
+                                @Html.TextBoxFor(m => m.nationality, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.nationality, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.address, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+
+                                @Html.TextAreaFor(m => m.address, new { @class = "form-control", row = 3 })
+                                @Html.ValidationMessageFor(m => m.address, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.mobile, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-mobile"></i>
+                                </div>
+                                @Html.TextBoxFor(m => m.mobile, new { @class = "form-control" })
+
+                            </div>
+                            @Html.ValidationMessageFor(m => m.mobile, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.email, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            <div class="input-group" id="mail">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-envelope-o"></i>
+                                </div>
+                                @Html.TextBoxFor(m => m.email, new { @class = "form-control" })
+
+                            </div>
+                            @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserPhoto, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(model => model.userImg, new { Type = "File", @id = "image", @onchange = "fileCheck(this);" })
+                            @Html.ValidationMessageFor(model => model.userImg, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.username, new { @class = "col-md-6 control-label"})
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-user-secret"></i>
+                                </div>
+                                @Html.TextBoxFor(m => m.username, new { @class = "form-control"})
+
+                            </div>
+                            @Html.ValidationMessageFor(m => m.username, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.password, new { @class = "col-md-6 control-label" })
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-unlock"></i>
+                                </div>
+                               @Html.PasswordFor(m => m.password, new { @class = "form-control" })
+
+                            </div>
+                            @Html.ValidationMessageFor(m => m.password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <div class="input-group">
+                                <input type="submit" class="sbtn" value="Register" id="register" onclick="ValidateControl();" />
+                                @*<input type="button" id="clearForm" value="CLEAR" class="btn btn-success"/>*@
+                            </div>
+                            </div>
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+                </div>
+
+                }
+                <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+                <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+                @section Scripts {
+                    @Scripts.Render("~/bundles/jqueryval")
+                }
+                @Scripts.Render("~/bundles/jqueryval")
+</body>
+</html>

@@ -1,0 +1,148 @@
+﻿@model NuNetwork.Models.group
+
+@{
+    ViewBag.Title = "RemoveGroupMember";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var procedureName = "USPSearchRemoveGroup";
+                $.ajax({
+                    url: '/Group/SearchWithNameGroupMember/',
+                    dataType: 'json',
+                    data: { procedureName: procedureName },
+                    success: function (data) {
+                        var tagObjects = JSON.parse(data);
+                        $("#tag").tokenInput(tagObjects,{
+                            crossDomain: false,
+                            preventDuplicates: true
+                        });
+                    }
+                });
+
+        });
+</script>
+
+
+<script>
+            $(document).ready(function () {
+                $("#CityName").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: "/Group/SearchGroup",
+                            type: "POST",
+                            async: false,
+                            cache: false,
+                            dataType: "json",
+                            data: { prefix: request.term },
+                            success: function (data) {
+                                response($.map(data, function (item) {
+
+                                    return { label: item.Name, id: item.Sr_no };
+                                }))
+
+                            }
+
+                        })
+
+                    },
+                    select: function (event, ui) {
+                        var label = ui.item.id;
+                        $("#CityName").val("");
+                        $.ajax({
+
+                            type: "POST",
+                            async: false,
+                            cache: false,
+                            url: "/UserRegister/Search",
+                            data: { SearchValue: label },
+                            success: function (response) {
+                                if (response.id == 1) {
+                                    window.location.href = "/UserRegister/UserProfile";
+                                }
+                                else {
+
+                                }
+                            },
+                            failure: function (response) {
+
+                            },
+                            error: function (response) {
+
+                            }
+                        });
+
+                    }
+                });
+            });
+</script>
+
+
+
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("input[type=button]").click(function () {
+                var tagIds = $('#tag').val();
+                tagIds = tagIds + ',';
+
+
+                if (tagIds == '') {
+                    alert('please fill all feilds');
+                }
+
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Group/RemoveGrpMember",
+                        data: { userTockenId: tagIds},
+                        success: function (response) {
+                            if (response.id == 1) {
+                                window.location.href = '@Url.Action("GroupDetails", "CreateEvent")';
+                            }
+                            else {
+                                alert("failed");
+                            }
+
+                        },
+
+                        failure: function (response) {
+
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+        });
+        });
+
+</script>
+
+
+<html>
+<body background="~/Images/LoginBackground.jpg" style="background-repeat:no-repeat; background-size:auto">
+
+    <div class="jumbotron" style="width:600px;margin-left:300px;background-color:whitesmoke;margin-top:2px">
+        <h2 style="color:dodgerblue;margin-left:50px">&nbsp&nbsp&nbspRemove Group Member.</h2>
+        <hr />
+
+        <div class="form-group groupFontColor" style="width:300px">
+            &nbsp&nbsp&nbspSearch Name
+            <div class="col-md-10">
+                <input type="text" ng-model="test" id="tag" placeholder="Enter Group Member" style="height:30px ; width:300px; margin-top:10px" class="form-control">
+                </br>
+            </div>
+
+
+
+            <div style="margin-left:20px">
+                <input type="button" id="post" class="btn btn-primary" value="Remove" />
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
+

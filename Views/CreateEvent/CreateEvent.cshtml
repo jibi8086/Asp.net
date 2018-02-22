@@ -1,0 +1,115 @@
+﻿@model NuNetwork.Models.EventCreation
+@{
+    ViewBag.Title = "CreateEvent";
+    Layout = "~/Views/Shared/MasterNewsFeed.cshtml";
+}
+
+<head>
+    <link href="~/Css/bootstrap-cosmo.css" rel="stylesheet" />
+    <script>
+        $(function () {
+            $(".datepicker").datepicker({
+                dateFormat: "yy/mm/dd",
+                changeMonth: true,
+                changeYear: true,
+                minDate: 0,
+                showOn: "both",
+                buttonText: "<i class='fa fa-calendar'></i> "
+            }).attr('readonly', 'readonly');
+        });
+    </script>
+    <script type="text/javascript">
+        function ValidateControl() {
+            if ($("#eventName").val() == "") {
+                $("#eventName").addClass("form-control is-invalid");
+            }
+            if ($("#details").val() == "") {
+                $("#details").addClass("form-control is-invalid");
+            }
+            if ($("#where").val() == "") {
+                $("#where").addClass("form-control is-invalid");
+            }
+
+            if ($("#time").val() == "") {
+                $("#time").addClass("form-control is-invalid");
+            }
+
+        }
+    </script>
+</head>
+        <body>
+            @using (Html.BeginForm("CreateEvent", "CreateEvent", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                <div class="jumbotron">
+                    <div class="createvent">
+                        <fieldset>
+                            <center style="color: #1967be;font-weight:bold;"><h2>Event Creation</h2></center>
+                           
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.eventName)
+                                @Html.TextBoxFor(m => m.eventName, new { @class = "form-control input-sm", style = "height:50px;" })
+                                @Html.ValidationMessageFor(m => m.eventName, "", new { @class = "text-danger" })
+
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.details)
+                                @Html.TextBoxFor(m => m.details, new { @class = "form-control input-sm", style = "height:50px;" })
+                                @Html.ValidationMessageFor(m => m.details, "", new { @class = "text-danger" })
+
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.where)
+                                @Html.TextAreaFor(m => m.where, new { @class = "form-control input-sm" })
+                                @Html.ValidationMessageFor(m => m.where, "", new { @class = "text-danger" })
+
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.startDate)<br />
+                                @Html.EditorFor(m => m.startDate, new { htmlAttributes = new { @readonly = "true", @class = "datepicker", style = "height:50px;" } })
+                                @Html.ValidationMessageFor(m => m.startDate, "", new { @class = "text-danger" })
+
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.endDate)<br />
+                                @Html.EditorFor(m => m.endDate, new { htmlAttributes = new { @readonly = "true", @class = "datepicker", style = "height:50px;" } })
+                                @Html.ValidationMessageFor(m => m.endDate, "", new { @class = "text-danger" })
+
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.time)
+                                @Html.TextBoxFor(m => m.time, new { @class = "form-control input-sm", style = "height:50px;" })
+                                @Html.ValidationMessageFor(m => m.time, "", new { @class = "text-danger" })
+
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" class="btn btn-primary" value="Create" onclick="ValidateControl();" />
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            }
+
+        </body>
+@if (ViewBag.Message != null)
+            {
+    <script type="text/javascript">
+                    window.onload = function () {
+                        bootbox.alert({
+                            size: "medium",
+                            message: "<b>Event posted </b>",
+                            callback: function () { window.location.href = '@Url.Action("CreatePost", "CreatePost")'; }
+                        })
+                    };
+
+    </script>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+}
